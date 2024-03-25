@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://bjj52vhd1kuyt"]
+
+[ext_resource type="Script" path="res://src/Road.cs" id="1_6bctl"]
+[ext_resource type="Script" path="res://src/SpawnButton.cs" id="2_yxx8x"]
+[ext_resource type="Script" path="res://src/IsAtEndButton.cs" id="3_3277t"]
+
+[sub_resource type="Curve2D" id="Curve2D_ko7gh"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 1042, 552, 0, 0, 0, 0, 119, 291, 0, 0, 0, 0, 100, 277, 0, 0, 0, 0, 113, 259, 0, 0, 0, 0, 699, 308, 0, 0, 0, 0, 911, 120, 0, 0, 0, 0, 911, 94, 0, 0, 0, 0, 888, 79, 0, 0, 0, 0, 602, 35, 0, 0, 0, 0, 187, 100, 0, 0, 0, 0, 186, 117, 0, 0, 0, 0, 562, 136)
+}
+point_count = 12
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Road" type="Path2D" parent="."]
+curve = SubResource("Curve2D_ko7gh")
+script = ExtResource("1_6bctl")
+
+[node name="Button" type="Button" parent="Road"]
+offset_left = 918.0
+offset_top = 262.0
+offset_right = 1075.0
+offset_bottom = 383.0
+text = "Spawn Car"
+script = ExtResource("2_yxx8x")
+
+[node name="CheckButton" type="CheckButton" parent="Road"]
+offset_left = 972.0
+offset_top = 203.0
+offset_right = 1016.0
+offset_bottom = 227.0
+text = "DeleteAtEnd"
+script = ExtResource("3_3277t")
