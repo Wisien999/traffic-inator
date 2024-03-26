@@ -9,7 +9,7 @@ public partial class SpawnButton : Button
 	{
 		Pressed += () =>
 		{
-			var parent = GetParent() as Road;
+			var parent = GetParent() as SingleWayRoad;
 			parent?.SpawnCar();
 		};
 	}

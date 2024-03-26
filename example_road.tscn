@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bjj52vhd1kuyt"]
+[gd_scene load_steps=6 format=3 uid="uid://bjj52vhd1kuyt"]
 
-[ext_resource type="Script" path="res://src/Road.cs" id="1_6bctl"]
+[ext_resource type="Script" path="res://src/SingleWayRoad.cs" id="1_6bctl"]
 [ext_resource type="Script" path="res://src/SpawnButton.cs" id="2_yxx8x"]
 [ext_resource type="Script" path="res://src/IsAtEndButton.cs" id="3_3277t"]
+[ext_resource type="Script" path="res://src/TwoWayRoad.cs" id="4_nvmr2"]
 
 [sub_resource type="Curve2D" id="Curve2D_ko7gh"]
 _data = {
@@ -31,3 +32,8 @@ offset_right = 1016.0
 offset_bottom = 227.0
 text = "DeleteAtEnd"
 script = ExtResource("3_3277t")
+
+[node name="Line2D" type="Line2D" parent="."]
+position = Vector2(140, 612)
+points = PackedVector2Array(258.505, -176.332, 131.505, -68.3321, 43, -146, 23.5049, -28.3321, -31.4951, -149.332)
+script = ExtResource("4_nvmr2")

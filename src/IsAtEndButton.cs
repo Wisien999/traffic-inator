@@ -9,7 +9,7 @@ public partial class IsAtEndButton : CheckButton
 	{
 		Toggled += on =>
 		{
-			var road = GetParent() as Road;
+			var road = GetParent() as SingleWayRoad;
 			if (road != null) road.DeleteAtEnd = on;
 		};
 	}
