@@ -35,5 +35,5 @@ script = ExtResource("3_3277t")
 
 [node name="Line2D" type="Line2D" parent="."]
 position = Vector2(140, 612)
-points = PackedVector2Array(258.505, -176.332, 131.505, -68.3321, 43, -146, 23.5049, -28.3321, -31.4951, -149.332)
+points = PackedVector2Array(188, -200, 142, -128, 251, -190, 400, -155, 324, -2, 266, -122, 204, -69, 131.505, -68.3321, 43, -146, 23.5049, -28.3321, -31.4951, -149.332)
 script = ExtResource("4_nvmr2")

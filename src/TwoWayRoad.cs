@@ -5,31 +5,36 @@ namespace test_godot_game;
 
 public partial class TwoWayRoad : Line2D
 {
-
 	SingleWayRoad lane1 = new SingleWayRoad();
 	SingleWayRoad lane2 = new SingleWayRoad();
+
+	private static float SpaceDistance = 6;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		var curve1 = new Curve2D();
-		var curve2 = new Curve2D();
+		this.Width = 24;
+		lane1.Curve = new Curve2D();
+		lane2.Curve = new Curve2D();
 
-		foreach (var point in this.Points)
-		{
-			GD.Print(point);
-			curve1.AddPoint(point);
-		}
-		// add to lane2 in revese order
-		Array.Reverse(this.Points);
-		GD.Print("Reversed");
-		for (int i = this.Points.Length -1; i >= 0 ; i--)
-		{
-			curve2.AddPoint(Points[i] + new Vector2(10, 10));
-		}
 
-		lane1.Curve = curve1;
-		lane2.Curve = curve2;
+		// var (starting2, ending1) = MovedStarting(Points[Points.Length-1], Points[Points.Length-2]);
+		lane1.Curve.AddPoint(MovedToRight(Points[1] - Points[0], Points[0]));
+		for (int i = 1; i < Points.Length-1; i++)
+		{
+			var p = CalculateDistancedPointsOnAngle(Points[i-1], Points[i], Points[i + 1]);
+			lane1.Curve.AddPoint(p);
+		}
+		lane1.Curve.AddPoint(MovedToRight(Points[Points.Length-1] - Points[Points.Length-2], Points[Points.Length-1]));
+
+
+		lane2.Curve.AddPoint(MovedToRight(Points[Points.Length-2] - Points[Points.Length-1], Points[Points.Length-1]));
+		for (int i = Points.Length-2; i >= 1; i--)
+		{
+			var p = CalculateDistancedPointsOnAngle(Points[i + 1], Points[i], Points[i - 1]);
+			lane2.Curve.AddPoint(p);
+		}
+		lane2.Curve.AddPoint(MovedToRight(Points[0] - Points[1], Points[0]));
 
 		AddChild(lane1);
 		AddChild(lane2);
@@ -46,15 +51,41 @@ public partial class TwoWayRoad : Line2D
 		lane2._Draw();
 	}
 
-	
-	private Godot.Collections.Array ReverseArray(Godot.Collections.Array array)
+	private Vector2 CalculateDistancedPointsOnAngle(Vector2 a, Vector2 b, Vector2 c)
 	{
-		Godot.Collections.Array newArray = new Godot.Collections.Array();
-		for (int i = array.Count - 1; i >= 0; i--)
+		var baDirection = b.DirectionTo(a);
+		var bcDirection = b.DirectionTo(c);
+		var direction = baDirection + bcDirection;
+		var move = direction * SpaceDistance;
+
+		var p0 = b + move;
+		var product = leftOrRight(a, b, p0);
+
+		
+		GD.Print("cos", Math.Abs(baDirection.Cross(bcDirection)));
+		move = move * ((float) Math.Pow(0.5, Math.Abs(baDirection.Cross(bcDirection)))) * 2f;
+
+		if (product > 0)
 		{
-			newArray.Add(array[i]);
+			return b + move;
 		}
-		return newArray;
+
+		return b - move;
+	}
+
+	private float leftOrRight(Vector2 a, Vector2 b, Vector2 p) {
+		var ab = b - a;
+		var ap = p - a;
+
+		return ab.Cross(ap);
+	}
+
+	private Vector2 MovedToRight(Vector2 roadDirection, Vector2 pinned)
+	{
+		var moveDirection = -roadDirection.Orthogonal().Normalized();
+		var move = moveDirection * SpaceDistance;
+
+		return pinned + move;
 	}
 
 }

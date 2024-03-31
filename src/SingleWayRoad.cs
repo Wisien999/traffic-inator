@@ -14,6 +14,7 @@ public partial class SingleWayRoad : Path2D
 		DrawPolyline(Curve.GetBakedPoints(), Colors.Black, 7);
 	}
 
+
 	public override void _Ready()
 	{
 		SpawnCar();
