@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bjj52vhd1kuyt"]
+[gd_scene load_steps=10 format=3 uid="uid://bjj52vhd1kuyt"]
 
 [ext_resource type="Script" path="res://src/SingleWayRoad.cs" id="1_6bctl"]
 [ext_resource type="Script" path="res://src/SpawnButton.cs" id="2_yxx8x"]
@@ -9,15 +9,21 @@
 
 [sub_resource type="Curve2D" id="Curve2D_ko7gh"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 1042, 552, 0, 0, 0, 0, 119, 291, 0, 0, 0, 0, 100, 277, 0, 0, 0, 0, 113, 259, -20.7652, -79.2854, 20.7652, 79.2854, 580, 241, 0, 0, 0, 0, 699, 308, 0, 0, 0, 0, 911, 120, 0, 0, 0, 0, 911, 94, 0, 0, 0, 0, 888, 79, 0, 0, 0, 0, 602, 35, 0, 0, 0, 0, 187, 100, 0, 0, 0, 0, 186, 117, 0, 0, 0, 0, 562, 136)
+"points": PackedVector2Array(0, 0, 0, 0, 370, 263, 0, 0, 0, 0, 119, 291, 0, 0, 0, 0, 100, 277, 0, 0, 0, 0, 113, 259, -20.7652, -79.2854, 20.7652, 79.2854, 580, 241, 0, 0, 0, 0, 696, 209, -7.41624, 62.5083, 7.41624, -62.5083, 792, 95, 0, 0, 0, 0, 602, 35, 0, 0, 0, 0, 187, 100, 0, 0, 0, 0, 186, 117, 0, 0, 0, 0, 562, 136)
 }
-point_count = 13
+point_count = 11
 
 [sub_resource type="Curve2D" id="Curve2D_a6ito"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 24, -163, 0, 0, 0, 0, -95, -57, 0, 0, 0, 0, 107, -30, 0, 0, 0, 0, 290, -29, 0, 0, 0, 0, 349, -131, 0, 0, 0, 0, 182, -78, 0, 0, 0, 0, 188, -195, 0, 0, 0, 0, 418, -175, 0, 0, 0, 0, 513, -4)
+"points": PackedVector2Array(0, 0, 0, 0, 24, -163, 0, 0, 0, 0, -95, -57, 0, 0, 0, 0, 107, -30, 0, 0, 0, 0, 194.582, -88.7807, 0, 0, 0, 0, 116.479, -147.25, 0, 0, 0, 0, 188, -195, 0, 0, 0, 0, 276.289, -172.587, 0, 0, 0, 0, 294.313, -58.5716)
 }
-point_count = 9
+point_count = 8
+
+[sub_resource type="Curve2D" id="Curve2D_1mweq"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 573, 509, 0, 0, 0, 0, 684, 488, 0, 0, 0, 0, 737, 433)
+}
+point_count = 3
 
 [node name="Node2D" type="Node2D"]
 
@@ -26,18 +32,18 @@ curve = SubResource("Curve2D_ko7gh")
 script = ExtResource("1_6bctl")
 
 [node name="Button" type="Button" parent="Road"]
-offset_left = 918.0
-offset_top = 262.0
-offset_right = 1075.0
-offset_bottom = 383.0
+offset_left = 953.0
+offset_top = 138.0
+offset_right = 1110.0
+offset_bottom = 259.0
 text = "Spawn Car"
 script = ExtResource("2_yxx8x")
 
 [node name="CheckButton" type="CheckButton" parent="Road"]
-offset_left = 972.0
-offset_top = 203.0
-offset_right = 1016.0
-offset_bottom = 227.0
+offset_left = 971.0
+offset_top = 67.0
+offset_right = 1116.0
+offset_bottom = 98.0
 text = "DeleteAtEnd"
 script = ExtResource("3_3277t")
 
@@ -53,6 +59,18 @@ offset = Vector2(-941, -363)
 polygon = PackedVector2Array(24, 131, 133, 157, 56, 206)
 script = ExtResource("5_0wjot")
 
-[node name="Circle" type="Node2D" parent="."]
-position = Vector2(385, 234)
+[node name="Circle" type="Node2D" parent="." node_paths=PackedStringArray("AttachedRoads")]
+position = Vector2(780, 401)
 script = ExtResource("6_nax8h")
+AttachedRoads = [NodePath("../Road2"), NodePath("../Road1")]
+
+[node name="Road1" type="Path2D" parent="." node_paths=PackedStringArray("Target")]
+curve = SubResource("Curve2D_1mweq")
+script = ExtResource("1_6bctl")
+Target = NodePath("../Circle")
+
+[node name="Road2" type="Path2D" parent="." node_paths=PackedStringArray("Source")]
+position = Vector2(274, -78)
+curve = SubResource("Curve2D_1mweq")
+script = ExtResource("1_6bctl")
+Source = NodePath("../Circle")

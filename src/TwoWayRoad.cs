@@ -97,4 +97,9 @@ public partial class TwoWayRoad : Road, IUndirectedEdge<RoadConnection>
 
 		return pinned + move;
 	}
+
+	override public bool AddCar(RoadConnection source, Car car)
+	{
+		return false;
+	}
 }

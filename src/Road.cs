@@ -5,10 +5,10 @@ using Trafficinator;
 
 public abstract partial class Road: Path2D, IEdge<RoadConnection> 
 {
+	[Export]
 	public RoadConnection Source { get; set; }
+	[Export]
 	public RoadConnection Target { get; set; }
 
-	public void AddCar(RoadConnection source, Car car)
-	{
-	}
+	public abstract bool AddCar(RoadConnection source, Car car);
 }

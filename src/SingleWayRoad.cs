@@ -33,13 +33,24 @@ public partial class SingleWayRoad : Road
 				car.QueueRedraw();
 			lastAvailablePos = car.Progress - 25;
 		}
-		
+
+		var firstCar = _cars.First;
 		// ReSharper disable once CompareOfFloatsByEqualityOperator
-		if (DeleteAtEnd && _cars.First != null && _cars.First.Value.Progress == curveLength)
+		if (firstCar != null && firstCar.Value.Progress == curveLength)
 		{
-			_cars.First.Value.QueueFree();
-			_cars.RemoveFirst();
-		}    
+			if (DeleteAtEnd)
+			{
+				_cars.First.Value.QueueFree();
+				_cars.RemoveFirst();
+			}
+			else if (Target != null)
+			{
+				_cars.RemoveFirst();
+				RemoveChild(firstCar.Value);
+				Target.CarEntered(this, firstCar.Value);
+			}
+		}
+		
 	}
 
 	public void SpawnCar()
@@ -49,9 +60,14 @@ public partial class SingleWayRoad : Road
 		AddChild(car); 
 	}
 
-	new public void AddCar(RoadConnection source, Car car)
+	override public bool AddCar(RoadConnection source, Car car)
 	{
+		if (source != Source) return false;
+		car.Progress = 0;
+
 		_cars.AddLast(car);
 		AddChild(car);
+
+		return true;
 	}
 }

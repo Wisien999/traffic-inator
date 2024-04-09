@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using Godot.Collections;
+using Godot;
 
 using Trafficinator;
 
-public interface RoadConnection
+public abstract partial class RoadConnection: Node2D
 {
-	public Array<Road> AttachedRoads { get; }
-	public void CarEntered(Road from, Car car);
+	public abstract Array<Road> AttachedRoads { get; set; }
+	public abstract void CarEntered(Road from, Car car);
 }
