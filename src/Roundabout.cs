@@ -40,7 +40,7 @@ public partial class Roundabout: RoadConnection
 
 		var (car, entranceTime, source) = cars.Peek();
 
-		if (entranceTime.AddSeconds(1) > DateTime.Now)
+		if (entranceTime.AddSeconds(1) < DateTime.Now)
 		{
 			var dispatched = false;
 			while (!dispatched) // find a road to attach
