@@ -1,15 +1,23 @@
-[gd_scene load_steps=6 format=3 uid="uid://bjj52vhd1kuyt"]
+[gd_scene load_steps=9 format=3 uid="uid://bjj52vhd1kuyt"]
 
 [ext_resource type="Script" path="res://src/SingleWayRoad.cs" id="1_6bctl"]
 [ext_resource type="Script" path="res://src/SpawnButton.cs" id="2_yxx8x"]
 [ext_resource type="Script" path="res://src/IsAtEndButton.cs" id="3_3277t"]
 [ext_resource type="Script" path="res://src/TwoWayRoad.cs" id="4_nvmr2"]
+[ext_resource type="Script" path="res://src/Intersection.cs" id="5_0wjot"]
+[ext_resource type="Script" path="res://src/Roundabout.cs" id="6_nax8h"]
 
 [sub_resource type="Curve2D" id="Curve2D_ko7gh"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 1042, 552, 0, 0, 0, 0, 119, 291, 0, 0, 0, 0, 100, 277, 0, 0, 0, 0, 113, 259, 0, 0, 0, 0, 699, 308, 0, 0, 0, 0, 911, 120, 0, 0, 0, 0, 911, 94, 0, 0, 0, 0, 888, 79, 0, 0, 0, 0, 602, 35, 0, 0, 0, 0, 187, 100, 0, 0, 0, 0, 186, 117, 0, 0, 0, 0, 562, 136)
+"points": PackedVector2Array(0, 0, 0, 0, 1042, 552, 0, 0, 0, 0, 119, 291, 0, 0, 0, 0, 100, 277, 0, 0, 0, 0, 113, 259, -20.7652, -79.2854, 20.7652, 79.2854, 580, 241, 0, 0, 0, 0, 699, 308, 0, 0, 0, 0, 911, 120, 0, 0, 0, 0, 911, 94, 0, 0, 0, 0, 888, 79, 0, 0, 0, 0, 602, 35, 0, 0, 0, 0, 187, 100, 0, 0, 0, 0, 186, 117, 0, 0, 0, 0, 562, 136)
 }
-point_count = 12
+point_count = 13
+
+[sub_resource type="Curve2D" id="Curve2D_a6ito"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 24, -163, 0, 0, 0, 0, -95, -57, 0, 0, 0, 0, 107, -30, 0, 0, 0, 0, 290, -29, 0, 0, 0, 0, 349, -131, 0, 0, 0, 0, 182, -78, 0, 0, 0, 0, 188, -195, 0, 0, 0, 0, 418, -175, 0, 0, 0, 0, 513, -4)
+}
+point_count = 9
 
 [node name="Node2D" type="Node2D"]
 
@@ -33,7 +41,18 @@ offset_bottom = 227.0
 text = "DeleteAtEnd"
 script = ExtResource("3_3277t")
 
-[node name="Line2D" type="Line2D" parent="."]
-position = Vector2(140, 612)
-points = PackedVector2Array(188, -200, 142, -128, 251, -190, 400, -155, 324, -2, 266, -122, 204, -69, 131.505, -68.3321, 43, -146, 23.5049, -28.3321, -31.4951, -149.332)
+[node name="TwoWayRoad" type="Path2D" parent="."]
+position = Vector2(124.062, 644.105)
+scale = Vector2(0.832237, 1.02618)
+curve = SubResource("Curve2D_a6ito")
 script = ExtResource("4_nvmr2")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2(945, 363)
+offset = Vector2(-941, -363)
+polygon = PackedVector2Array(24, 131, 133, 157, 56, 206)
+script = ExtResource("5_0wjot")
+
+[node name="Circle" type="Node2D" parent="."]
+position = Vector2(385, 234)
+script = ExtResource("6_nax8h")

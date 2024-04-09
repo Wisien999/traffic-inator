@@ -1,6 +1,6 @@
 using Godot;
 using System;
-using test_godot_game;
+using Trafficinator;
 
 public partial class IsAtEndButton : CheckButton
 {

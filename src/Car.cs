@@ -1,9 +1,11 @@
 using Godot;
 
-namespace test_godot_game;
+namespace Trafficinator;
 
 public partial class Car: PathFollow2D
 {
+	public Color Color = Colors.Red;
+
 	public Car()
 	{
 		Loop = false;

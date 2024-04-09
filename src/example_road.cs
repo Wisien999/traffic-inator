@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-namespace test_godot_game;
+namespace Trafficinator;
 
 public partial class example_road : Node2D
 {

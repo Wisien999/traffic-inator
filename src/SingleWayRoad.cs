@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace test_godot_game;
+namespace Trafficinator;
 
 using Godot;
 
-public partial class SingleWayRoad : Path2D
+public partial class SingleWayRoad : Road
 {
 	private readonly LinkedList<Car> _cars = new();
 	public bool DeleteAtEnd = false;
@@ -46,6 +46,12 @@ public partial class SingleWayRoad : Path2D
 	{
 		var car = new Car();
 		_cars.AddLast(car);
-	   AddChild(car); 
+		AddChild(car); 
+	}
+
+	new public void AddCar(RoadConnection source, Car car)
+	{
+		_cars.AddLast(car);
+		AddChild(car);
 	}
 }

@@ -1,9 +1,10 @@
 using Godot;
 using System;
+using QuikGraph;
 
-namespace test_godot_game;
+namespace Trafficinator;
 
-public partial class TwoWayRoad : Line2D
+public partial class TwoWayRoad : Road, IUndirectedEdge<RoadConnection>
 {
 	SingleWayRoad lane1 = new SingleWayRoad();
 	SingleWayRoad lane2 = new SingleWayRoad();
@@ -13,31 +14,39 @@ public partial class TwoWayRoad : Line2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		this.Width = 24;
 		lane1.Curve = new Curve2D();
 		lane2.Curve = new Curve2D();
 
-
-		// var (starting2, ending1) = MovedStarting(Points[Points.Length-1], Points[Points.Length-2]);
-		lane1.Curve.AddPoint(MovedToRight(Points[1] - Points[0], Points[0]));
-		for (int i = 1; i < Points.Length-1; i++)
+		try
 		{
-			var p = CalculateDistancedPointsOnAngle(Points[i-1], Points[i], Points[i + 1]);
+			
+
+		lane1.Curve.AddPoint(MovedToRight(Curve.GetPointPosition(1) - Curve.GetPointPosition(0), Curve.GetPointPosition(0)));
+		for (int i = 1; i < Curve.PointCount-1; i++)
+		{
+			var p = CalculateDistancedPointsOnAngle(Curve.GetPointPosition(i-1), Curve.GetPointPosition(i), Curve.GetPointPosition(i + 1));
 			lane1.Curve.AddPoint(p);
 		}
-		lane1.Curve.AddPoint(MovedToRight(Points[Points.Length-1] - Points[Points.Length-2], Points[Points.Length-1]));
+		lane1.Curve.AddPoint(MovedToRight(Curve.GetPointPosition(Curve.PointCount) - Curve.GetPointPosition(Curve.PointCount), Curve.GetPointPosition(Curve.PointCount-1)));
 
 
-		lane2.Curve.AddPoint(MovedToRight(Points[Points.Length-2] - Points[Points.Length-1], Points[Points.Length-1]));
-		for (int i = Points.Length-2; i >= 1; i--)
+		lane2.Curve.AddPoint(MovedToRight(Curve.GetPointPosition(Curve.PointCount-2) - Curve.GetPointPosition(Curve.PointCount-1), Curve.GetPointPosition(Curve.PointCount-1)));
+		for (int i = Curve.PointCount-2; i >= 1; i--)
 		{
-			var p = CalculateDistancedPointsOnAngle(Points[i + 1], Points[i], Points[i - 1]);
+			var p = CalculateDistancedPointsOnAngle(Curve.GetPointPosition(i + 1), Curve.GetPointPosition(i), Curve.GetPointPosition(i - 1));
 			lane2.Curve.AddPoint(p);
 		}
-		lane2.Curve.AddPoint(MovedToRight(Points[0] - Points[1], Points[0]));
+		lane2.Curve.AddPoint(MovedToRight(Curve.GetPointPosition(0) - Curve.GetPointPosition(1), Curve.GetPointPosition(0)));
 
 		AddChild(lane1);
 		AddChild(lane2);
+		}
+		catch (System.Exception)
+		{
+			GD.Print("Error in TwoWayRoad");
+			
+			throw;
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -47,6 +56,7 @@ public partial class TwoWayRoad : Line2D
 
 	public override void _Draw()
 	{
+		DrawPolyline(Curve.GetBakedPoints(), Colors.White, 20);
 		lane1._Draw();
 		lane2._Draw();
 	}
@@ -62,8 +72,8 @@ public partial class TwoWayRoad : Line2D
 		var product = leftOrRight(a, b, p0);
 
 		
-		GD.Print("cos", Math.Abs(baDirection.Cross(bcDirection)));
-		move = move * ((float) Math.Pow(0.5, Math.Abs(baDirection.Cross(bcDirection)))) * 2f;
+		// GD.Print("cos", Math.Abs(baDirection.Cross(bcDirection)));
+		move = move * ((float) Math.Pow(0.5, Math.Abs(baDirection.Cross(bcDirection)))) * 1.8f;
 
 		if (product > 0)
 		{
@@ -87,5 +97,4 @@ public partial class TwoWayRoad : Line2D
 
 		return pinned + move;
 	}
-
 }
