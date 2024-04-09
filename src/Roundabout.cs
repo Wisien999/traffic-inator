@@ -28,7 +28,7 @@ public partial class Roundabout: RoadConnection
 		if (cars.Count > 0)
 		{
 			var (car, _, _) = cars.Peek();
-			DrawRect(new Rect2(-10, -10, 20, 20), car.Color);
+			DrawRect(new Rect2(-5, -5, 10, 10), car.Color);
 			// DrawRect(new Rect2(-10, -10, 20, 20), Colors.Red);
 		}
 	}
@@ -43,13 +43,15 @@ public partial class Roundabout: RoadConnection
 		if (entranceTime.AddSeconds(1) < DateTime.Now)
 		{
 			var dispatched = false;
+			var i = random.Next(0, AttachedRoads.Count);
 			while (!dispatched) // find a road to attach
 			{
-				var i = random.Next(0, AttachedRoads.Count);
 				GD.Print("Car is dispatching to ", i);
 				dispatched = AttachedRoads[i].AddCar(this, car);
-				cars.Dequeue();
+				i = (i + 1) % AttachedRoads.Count;
 			}
+			cars.Dequeue();
+			QueueRedraw();
 		}
 
 	}
@@ -57,5 +59,6 @@ public partial class Roundabout: RoadConnection
 	override public void CarEntered(Road from, Car car)
 	{
 		cars.Enqueue((car, DateTime.Now, from));
+		QueueRedraw();
 	}
 }
