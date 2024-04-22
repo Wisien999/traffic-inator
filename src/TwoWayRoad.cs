@@ -9,6 +9,11 @@ public partial class TwoWayRoad : Road, IUndirectedEdge<RoadConnection>
 	SingleWayRoad lane1 = new SingleWayRoad();
 	SingleWayRoad lane2 = new SingleWayRoad();
 
+  [Export]
+  public override RoadConnection Source { get {return lane1.Source; } set { lane1.Source = value; lane2.Target = value; } } 
+  [Export]
+  public override RoadConnection Target { get {return lane1.Target; } set {lane1.Target = value; lane2.Source = value; } }
+
 	private static float SpaceDistance = 6;
 
 	// Called when the node enters the scene tree for the first time.
@@ -27,7 +32,7 @@ public partial class TwoWayRoad : Road, IUndirectedEdge<RoadConnection>
 			var p = CalculateDistancedPointsOnAngle(Curve.GetPointPosition(i-1), Curve.GetPointPosition(i), Curve.GetPointPosition(i + 1));
 			lane1.Curve.AddPoint(p);
 		}
-		lane1.Curve.AddPoint(MovedToRight(Curve.GetPointPosition(Curve.PointCount) - Curve.GetPointPosition(Curve.PointCount), Curve.GetPointPosition(Curve.PointCount-1)));
+		lane1.Curve.AddPoint(MovedToRight(Curve.GetPointPosition(Curve.PointCount-2) - Curve.GetPointPosition(Curve.PointCount-1), Curve.GetPointPosition(Curve.PointCount-1)));
 
 
 		lane2.Curve.AddPoint(MovedToRight(Curve.GetPointPosition(Curve.PointCount-2) - Curve.GetPointPosition(Curve.PointCount-1), Curve.GetPointPosition(Curve.PointCount-1)));
