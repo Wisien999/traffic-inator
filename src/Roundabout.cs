@@ -8,7 +8,7 @@ namespace Trafficinator;
 public partial class Roundabout: RoadConnection
 {
 	[Export]
-	override public Array<Road> AttachedRoads { get; set; } = new();
+	override public Array<Road> OutRoads { get; set; } = new();
 	private Queue<(Car, DateTime, Road)> cars = new();
 	private int lastUpdateTime = 0;
 
@@ -35,6 +35,7 @@ public partial class Roundabout: RoadConnection
 
 	public override void _Process(double delta)
 	{
+		if (OutRoads.Count == 0) return;
 		if (cars.Count == 0) return;
 
 
@@ -43,12 +44,11 @@ public partial class Roundabout: RoadConnection
 		if (entranceTime.AddSeconds(1) < DateTime.Now)
 		{
 			var dispatched = false;
-			var i = random.Next(0, AttachedRoads.Count);
+			var i = random.Next(0, OutRoads.Count);
 			while (!dispatched) // find a road to attach
 			{
-				// GD.Print("Car is dispatching to ", i);
-				dispatched = AttachedRoads[i].AddCar(this, car);
-				i = (i + 1) % AttachedRoads.Count;
+				dispatched = OutRoads[i].AddCar(this, car);
+				i = (i + 1) % OutRoads.Count;
 			}
 			cars.Dequeue();
 			QueueRedraw();

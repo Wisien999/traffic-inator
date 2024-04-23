@@ -62,7 +62,7 @@ public partial class SingleWayRoad : Road
 
 	override public bool AddCar(RoadConnection source, Car car)
 	{
-		if (source != Source) return false;
+		// if (source != Source) return false;
 		car.Progress = 0;
 
 		_cars.AddLast(car);

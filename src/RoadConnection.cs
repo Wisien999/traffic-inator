@@ -6,6 +6,6 @@ using Trafficinator;
 
 public abstract partial class RoadConnection: Node2D
 {
-	public abstract Array<Road> AttachedRoads { get; set; }
+	public abstract Array<Road> OutRoads { get; set; }
 	public abstract void CarEntered(Road from, Car car);
 }

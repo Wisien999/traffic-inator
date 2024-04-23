@@ -62,8 +62,6 @@ public partial class TwoWayRoad : Road, IUndirectedEdge<RoadConnection>
 	public override void _Draw()
 	{
 		DrawPolyline(Curve.GetBakedPoints(), Colors.White, 20);
-		lane1._Draw();
-		lane2._Draw();
 	}
 
 	private Vector2 CalculateDistancedPointsOnAngle(Vector2 a, Vector2 b, Vector2 c)

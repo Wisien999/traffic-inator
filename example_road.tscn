@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bjj52vhd1kuyt"]
+[gd_scene load_steps=14 format=3 uid="uid://bjj52vhd1kuyt"]
 
 [ext_resource type="Script" path="res://src/SingleWayRoad.cs" id="1_6bctl"]
 [ext_resource type="Script" path="res://src/example_road.cs" id="1_ke2db"]
@@ -37,6 +37,12 @@ _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 776, 394, -74.1624, 42.3785, 74.1624, -42.3785, 857, 322, 0, 0, 0, 0, 1031, 372)
 }
 point_count = 3
+
+[sub_resource type="Curve2D" id="Curve2D_br63b"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 261, 163, 0, 0, 0, 0, 463, 163)
+}
+point_count = 2
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_ke2db")
@@ -101,3 +107,8 @@ visible = false
 position = Vector2(742, 431)
 script = ExtResource("6_nax8h")
 AttachedRoads = [null, null, null]
+
+[node name="Path2D3" type="Path2D" parent="."]
+position = Vector2(-40, 774)
+curve = SubResource("Curve2D_br63b")
+script = ExtResource("4_nvmr2")

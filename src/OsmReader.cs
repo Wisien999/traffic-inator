@@ -71,10 +71,10 @@ public class OsmReader
 
 			var singleWay = way.Tags.Contains("oneway", "yes");
 			if (singleWay) {
-			  var road = new SingleWayRoad() { Source = start, Target = end, Curve = curve};
+			  var road = new SingleWayRoad() { Source = start, Target = end, Curve = curve };
 			  roads.Add(road);
 			} else {
-			  var road = new TwoWayRoad() {Source = start, Target = end, Curve = curve};  
+			  var road = new TwoWayRoad() { Source = start, Target = end, Curve = curve };  
 			  roads.Add(road);
 			}
 		}
