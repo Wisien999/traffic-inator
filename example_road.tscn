@@ -63,8 +63,7 @@ text = "DeleteAtEnd"
 script = ExtResource("3_3277t")
 
 [node name="TwoWayRoad" type="Path2D" parent="."]
-visible = false
-position = Vector2(124.062, 644.105)
+position = Vector2(144, 880)
 scale = Vector2(0.832237, 1.02618)
 curve = SubResource("Curve2D_a6ito")
 script = ExtResource("4_nvmr2")

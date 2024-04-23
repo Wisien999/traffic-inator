@@ -46,7 +46,7 @@ public partial class Roundabout: RoadConnection
 			var i = random.Next(0, AttachedRoads.Count);
 			while (!dispatched) // find a road to attach
 			{
-				GD.Print("Car is dispatching to ", i);
+				// GD.Print("Car is dispatching to ", i);
 				dispatched = AttachedRoads[i].AddCar(this, car);
 				i = (i + 1) % AttachedRoads.Count;
 			}
