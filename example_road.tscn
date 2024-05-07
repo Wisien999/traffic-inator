@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bjj52vhd1kuyt"]
+[gd_scene load_steps=15 format=3 uid="uid://bjj52vhd1kuyt"]
 
 [ext_resource type="Script" path="res://src/SingleWayRoad.cs" id="1_6bctl"]
 [ext_resource type="Script" path="res://src/SpawnButton.cs" id="2_yxx8x"]
@@ -31,6 +31,12 @@ _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 812, 321, 0, 0, 0, 0, 850, 438, 0, 0, 0, 0, 944, 404, 0, 0, 0, 0, 1037, 445)
 }
 point_count = 4
+
+[sub_resource type="Curve2D" id="Curve2D_kbgmy"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -7, 81, 0, 0, 0, 0, 3, 10, 0, 0, 0, 0, -119, -15, 0, 0, 0, 0, -195, -64, 0, 0, 0, 0, -243, -45)
+}
+point_count = 5
 
 [sub_resource type="Curve2D" id="Curve2D_q5sb6"]
 _data = {
@@ -85,11 +91,19 @@ curve = SubResource("Curve2D_1mweq")
 script = ExtResource("1_6bctl")
 Target = NodePath("../Circle")
 
-[node name="Road-down" type="Path2D" parent="." node_paths=PackedStringArray("Source")]
+[node name="Road-down" type="Path2D" parent="." node_paths=PackedStringArray("Source", "Target")]
 position = Vector2(-67, 117)
 curve = SubResource("Curve2D_osunq")
 script = ExtResource("1_6bctl")
 Source = NodePath("../Circle")
+Target = NodePath("../roundabout3")
+
+[node name="Path2D" type="Path2D" parent="Road-down" node_paths=PackedStringArray("Source", "Target")]
+position = Vector2(1073, 365)
+curve = SubResource("Curve2D_kbgmy")
+script = ExtResource("1_6bctl")
+Source = NodePath("../../roundabout3")
+Target = NodePath("../../Circle")
 
 [node name="road-up" type="Path2D" parent="." node_paths=PackedStringArray("Source")]
 position = Vector2(-30, 30)
@@ -109,9 +123,14 @@ script = ExtResource("4_nvmr2")
 [node name="Building1" type="Node2D" parent="." node_paths=PackedStringArray("AttachedRoad")]
 position = Vector2(647, 520)
 script = ExtResource("7_jy6g6")
+SpawnRate = 3
 AttachedRoad = NodePath("../Road1")
 
 [node name="Building2" type="Node2D" parent="." node_paths=PackedStringArray("AttachedRoad")]
-position = Vector2(791, 472)
+position = Vector2(782, 580)
 script = ExtResource("7_jy6g6")
 AttachedRoad = NodePath("../Road-down")
+
+[node name="roundabout3" type="Node2D" parent="."]
+position = Vector2(989, 573)
+script = ExtResource("6_nax8h")
