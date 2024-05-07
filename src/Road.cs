@@ -19,4 +19,5 @@ public abstract partial class Road: Path2D, IEdge<RoadConnection>
 	public virtual RoadConnection Target { get; set; }
 
 	public abstract bool AddCar(RoadConnection source, Car car);
+	public abstract bool AddCarAt(Building source, Car car);
 }

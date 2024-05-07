@@ -113,4 +113,9 @@ public partial class TwoWayRoad : Road, IUndirectedEdge<RoadConnection>
 
 		return false;
 	}
+
+	override public bool AddCarAt(Building source, Car car)
+	{
+		return false;
+	}
 }
