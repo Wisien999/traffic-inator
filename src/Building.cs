@@ -21,7 +21,7 @@ public partial class Building : Node2D {
 
 
 	public override void _Draw() {
-		DrawRect(new Rect2(-10, -10, 40, 20), Colors.Tan);
+		DrawRect(new Rect2(-20, -10, 40, 20), Colors.Tan);
 	}
 
 
