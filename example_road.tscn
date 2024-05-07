@@ -34,7 +34,7 @@ point_count = 4
 
 [sub_resource type="Curve2D" id="Curve2D_kbgmy"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, -7, 81, 0, 0, 0, 0, 3, 10, 0, 0, 0, 0, -119, -15, 0, 0, 0, 0, -195, -64, 0, 0, 0, 0, -243, -45)
+"points": PackedVector2Array(0, 0, 0, 0, -18, 79, 0, 0, 0, 0, 3, 10, 0, 0, 0, 0, -119, -15, 0, 0, 0, 0, -195, -64, 0, 0, 0, 0, -254, -52)
 }
 point_count = 5
 
@@ -132,5 +132,5 @@ script = ExtResource("7_jy6g6")
 AttachedRoad = NodePath("../Road-down")
 
 [node name="roundabout3" type="Node2D" parent="."]
-position = Vector2(989, 573)
+position = Vector2(979, 569)
 script = ExtResource("6_nax8h")
