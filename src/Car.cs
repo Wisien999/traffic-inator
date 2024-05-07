@@ -4,7 +4,7 @@ namespace Trafficinator;
 
 public partial class Car: PathFollow2D
 {
-	public Color Color = Colors.Red;
+	public Color Color = Colors.Blue;
 
 	public Car()
 	{
@@ -17,7 +17,7 @@ public partial class Car: PathFollow2D
 
 	public override void _Draw()
 	{
-		DrawRect(new Rect2(-10,-2.5f, 20, 5), Colors.Blue);
+		DrawRect(new Rect2(-10,-2.5f, 20, 5), Color);
 	}
 
 	public override void _Process(double delta)

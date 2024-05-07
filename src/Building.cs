@@ -27,7 +27,7 @@ public partial class Building : Node2D {
 
 	public void SpawnCar() {
 		GD.Print("Spawning car");
-		var res = AttachedRoad?.AddCarAt(this, new Car());
+		var res = AttachedRoad?.AddCarAt(this, new Car() { Color = Colors.Gold});
 		GD.Print("Spawned car ", res);
 	}
 }

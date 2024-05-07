@@ -91,6 +91,7 @@ public partial class SingleWayRoad : Road
 
 		if (_cars.Count == 0 || nextCar == null)
 		{
+			GD.Print("Adding car at the end");
 			car.Progress = entryProgress;
 			_cars.AddFirst(car);
 			AddChild(car);
@@ -98,9 +99,11 @@ public partial class SingleWayRoad : Road
 			return true;
 		}
 
+		GD.Print("Adding car before ", nextCar.Progress);
 		car.Progress = entryProgress;
-		_cars.AddBefore(_cars.Find(nextCar), car);
+		_cars.AddAfter(_cars.Find(nextCar), car);
 		AddChild(car);
+
 
 
 		return true;
@@ -108,13 +111,14 @@ public partial class SingleWayRoad : Road
 
 	private Car findFirstCarAfter(float progress)
 	{
+		Car lastCar = null;
 		foreach (var car in _cars)
 		{
 			if (car.Progress > progress)
 			{
-				return car;
+				lastCar = car;
 			}
 		}
-		return null;
+		return lastCar;
 	}
 }
