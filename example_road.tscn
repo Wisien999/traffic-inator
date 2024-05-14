@@ -33,12 +33,6 @@ _data = {
 }
 point_count = 4
 
-[sub_resource type="Curve2D" id="Curve2D_kbgmy"]
-_data = {
-"points": PackedVector2Array(0, 0, 0, 0, -24, 79, 0, 0, 0, 0, 3, 10, 0, 0, 0, 0, -119, -15, 0, 0, 0, 0, -195, -64, 0, 0, 0, 0, -254, -52)
-}
-point_count = 5
-
 [sub_resource type="Curve2D" id="Curve2D_q5sb6"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 776, 394, -74.1624, 42.3785, 74.1624, -42.3785, 857, 322, 0, 0, 0, 0, 1031, 372)
@@ -56,6 +50,12 @@ _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 735, 319, 0, 0, 0, 0, 602, 296, 0, 0, 0, 0, 564, 391)
 }
 point_count = 3
+
+[sub_resource type="Curve2D" id="Curve2D_kbgmy"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -24, 79, 0, 0, 0, 0, 3, 10, 0, 0, 0, 0, -119, -15, 0, 0, 0, 0, -195, -64, 0, 0, 0, 0, -254, -52)
+}
+point_count = 5
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_k4ti2")
@@ -107,13 +107,6 @@ script = ExtResource("1_6bctl")
 Source = NodePath("../roundabout1")
 Target = NodePath("../roundabout3")
 
-[node name="Path2D" type="Path2D" parent="Road-down" node_paths=PackedStringArray("Source", "Target")]
-position = Vector2(1073, 365)
-curve = SubResource("Curve2D_kbgmy")
-script = ExtResource("1_6bctl")
-Source = NodePath("../../roundabout3")
-Target = NodePath("../../roundabout1")
-
 [node name="road-dead-end" type="Path2D" parent="." node_paths=PackedStringArray("Source")]
 position = Vector2(-30, 30)
 curve = SubResource("Curve2D_q5sb6")
@@ -155,3 +148,10 @@ Target = NodePath("../roundabout4")
 position = Vector2(564, 507)
 script = ExtResource("6_nax8h")
 OutRoads = [NodePath("../Road1")]
+
+[node name="road-down-back" type="Path2D" parent="." node_paths=PackedStringArray("Source", "Target")]
+position = Vector2(1006, 482)
+curve = SubResource("Curve2D_kbgmy")
+script = ExtResource("1_6bctl")
+Source = NodePath("../roundabout3")
+Target = NodePath("../roundabout1")
