@@ -41,20 +41,70 @@ public partial class Roundabout: RoadConnection
 
 		var (car, entranceTime, source) = cars.Peek();
 
-		if (entranceTime.AddSeconds(1) < DateTime.Now)
+		if (entranceTime.AddSeconds(1) > DateTime.Now)
 		{
-			var dispatched = false;
-			var i = random.Next(0, OutRoads.Count);
-			while (!dispatched) // find a road to attach
-			{
-				dispatched = OutRoads[i].AddCar(this, car);
-				i = (i + 1) % OutRoads.Count;
-			}
+			return;
+		}
+
+		
+		var dispatched = DispatchCar(car);
+
+
+		if (dispatched) {
 			cars.Dequeue();
 			QueueRedraw();
 		}
 
 	}
+
+	private bool DispatchCar(Car car) {
+		return car switch
+		{
+			null => throw new ArgumentNullException(),
+			IdealTargetedCar targetedCar =>
+				DispatchTargetedCar(targetedCar),
+			RandomCar randomCar =>
+				DispatchRandomCar(randomCar),
+			_ => throw new ArgumentException("Invalid car type")
+		};
+	}
+
+	private bool DispatchRandomCar(RandomCar car) {
+		var i = random.Next(0, OutRoads.Count);
+		var dispatched = OutRoads[i].AddCar(this, car);
+		return dispatched;
+	}
+
+
+	private bool DispatchTargetedCar(IdealTargetedCar car) {
+		var i  = car.CurrentPathIndex;
+
+		if (car.CurrentPathIndex + 1 < car.PlannedPath.Count) {
+			var nextRoad =  car.PlannedPath[car.CurrentPathIndex + 1];
+
+			var res = nextRoad.AddCar(this, car);
+			if (!res) {
+				return false;
+			}
+			return true;
+		}
+
+		var res2 = car.Target.AttachedRoad.AddCar(this, car);
+
+		return res2;
+	}
+
+	// private Road findRoadTo(RoadConnection target) {
+	// 	foreach (var road in OutRoads)
+	// 	{
+	// 		if (road.Target == target)
+	// 		{
+	// 			return road;
+	// 		}
+	// 	}
+	// 	return null;
+	// }
+
 
 	override public void CarEntered(Road from, Car car)
 	{

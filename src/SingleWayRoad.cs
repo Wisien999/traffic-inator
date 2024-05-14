@@ -62,7 +62,7 @@ public partial class SingleWayRoad : Road
 
 	public void SpawnCar()
 	{
-		var car = new Car();
+		var car = new RandomCar();
 		_cars.AddLast(car);
 		AddChild(car); 
 	}
@@ -70,6 +70,7 @@ public partial class SingleWayRoad : Road
 	override public bool AddCar(RoadConnection source, Car car)
 	{
 		if (source != Source) return false;
+		if (_cars.Last?.Value.Progress < 10) return false;
 		car.Progress = 0;
 
 		_cars.AddLast(car);
@@ -80,7 +81,6 @@ public partial class SingleWayRoad : Road
 
 	override public bool AddCarAt(Building source, Car car)
 	{
-
 		var entryProgress = Curve.GetClosestOffset(source.Position);
 		GD.Print("Entry progress ", entryProgress, " / ", Curve.GetBakedLength());
 
@@ -103,8 +103,6 @@ public partial class SingleWayRoad : Road
 		car.Progress = entryProgress;
 		_cars.AddAfter(_cars.Find(nextCar), car);
 		AddChild(car);
-
-
 
 		return true;
 	}

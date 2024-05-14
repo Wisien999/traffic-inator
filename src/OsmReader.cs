@@ -6,6 +6,7 @@ using System.Linq;
 using OsmSharp;
 using OsmSharp.Complete;
 using OsmSharp.Streams;
+using QuikGraph;
 
 namespace Trafficinator;
 
@@ -29,7 +30,7 @@ public class OsmReader
 		"road"
 	};
 
-	public static Godot.Node2D Parse(FileInfo file, float scaleX, float scaleY)
+	public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Road>) Parse(FileInfo file, float scaleX, float scaleY)
 	{
 		using var fileStream = file.OpenRead();
 		OsmStreamSource src = file.Extension switch
@@ -86,7 +87,11 @@ public class OsmReader
 		foreach(var node in nodes.Values) {
 		  root.AddChild(node);
 		}
-		return root;
+		var graph = new AdjacencyGraph<RoadConnection, Road>();
+		graph.AddVertexRange(nodes.Values);
+		graph.AddEdgeRange(roads);
+
+		return (root, graph);
 
 	}
 

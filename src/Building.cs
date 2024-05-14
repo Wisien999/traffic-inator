@@ -7,7 +7,7 @@ public partial class Building : Node2D {
 	[Export]
 	public int SpawnRate = 5;
 	[Export]
-	private Road AttachedRoad;
+	public Road AttachedRoad;
 
 	private Timer spawnTimer = new();
 
@@ -27,7 +27,7 @@ public partial class Building : Node2D {
 
 	public void SpawnCar() {
 		GD.Print("Spawning car");
-		var res = AttachedRoad?.AddCarAt(this, new Car() { Color = Colors.Gold});
+		var res = AttachedRoad?.AddCarAt(this, new RandomCar() { Color = Colors.Gold});
 		GD.Print("Spawned car ", res);
 	}
 }
