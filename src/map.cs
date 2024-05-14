@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 using QuikGraph;
 using QuikGraph.Algorithms.ShortestPath;
@@ -8,6 +9,7 @@ public partial class map : Node2D
 {
 	Node2D _root;
 	AdjacencyGraph<RoadConnection, Road> graph;
+	private GlobalMapData GlobalMapData => GetNode<GlobalMapData>("/root/GlobalMapData");
 	public override void _Ready()
 	{
 		this.Name = "Map";
@@ -21,6 +23,8 @@ public partial class map : Node2D
 
 		_root = root;
 		this.graph = graph;
+		GlobalMapData.CarManager = new CarManager(graph, new());
+
 	}
 
 

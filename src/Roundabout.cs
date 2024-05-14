@@ -17,7 +17,6 @@ public partial class Roundabout: RoadConnection
 
 	public override void _Ready()
 	{
-			
 	}
 
 	public override void _Draw()
@@ -77,18 +76,19 @@ public partial class Roundabout: RoadConnection
 
 
 	private bool DispatchTargetedCar(IdealTargetedCar car) {
-		var i  = car.CurrentPathIndex;
-
-		if (car.CurrentPathIndex + 1 < car.PlannedPath.Count) {
-			var nextRoad =  car.PlannedPath[car.CurrentPathIndex + 1];
+		if (car.NextEdgeIdx < car.PlannedPath.Count) {
+			GD.Print("Dispatching car to next road");
+			var nextRoad = car.PlannedPath[car.NextEdgeIdx];
 
 			var res = nextRoad.AddCar(this, car);
-			if (!res) {
-				return false;
+			if (res) {
+				car.NextEdgeIdx++;
 			}
-			return true;
+			return res;
 		}
 
+		GD.Print("Dispatching car to target");
+		car.NextEdgeIdx++;
 		var res2 = car.Target.AttachedRoad.AddCar(this, car);
 
 		return res2;

@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://bjj52vhd1kuyt"]
+[gd_scene load_steps=17 format=3 uid="uid://bjj52vhd1kuyt"]
 
 [ext_resource type="Script" path="res://src/SingleWayRoad.cs" id="1_6bctl"]
+[ext_resource type="Script" path="res://src/dev/dev_scene.cs" id="1_k4ti2"]
 [ext_resource type="Script" path="res://src/SpawnButton.cs" id="2_yxx8x"]
 [ext_resource type="Script" path="res://src/IsAtEndButton.cs" id="3_3277t"]
 [ext_resource type="Script" path="res://src/TwoWayRoad.cs" id="4_nvmr2"]
@@ -50,7 +51,14 @@ _data = {
 }
 point_count = 2
 
+[sub_resource type="Curve2D" id="Curve2D_3ooqn"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 735, 319, 0, 0, 0, 0, 602, 296, 0, 0, 0, 0, 564, 391)
+}
+point_count = 3
+
 [node name="Node2D" type="Node2D"]
+script = ExtResource("1_k4ti2")
 
 [node name="Road" type="Path2D" parent="."]
 curve = SubResource("Curve2D_ko7gh")
@@ -85,17 +93,18 @@ offset = Vector2(-941, -363)
 polygon = PackedVector2Array(24, 131, 133, 157, 56, 206)
 script = ExtResource("5_0wjot")
 
-[node name="Road1" type="Path2D" parent="." node_paths=PackedStringArray("Target")]
+[node name="Road1" type="Path2D" parent="." node_paths=PackedStringArray("Source", "Target")]
 position = Vector2(-2, 1)
 curve = SubResource("Curve2D_1mweq")
 script = ExtResource("1_6bctl")
-Target = NodePath("../Circle")
+Source = NodePath("../roundabout4")
+Target = NodePath("../roundabout1")
 
 [node name="Road-down" type="Path2D" parent="." node_paths=PackedStringArray("Source", "Target")]
 position = Vector2(-67, 117)
 curve = SubResource("Curve2D_osunq")
 script = ExtResource("1_6bctl")
-Source = NodePath("../Circle")
+Source = NodePath("../roundabout1")
 Target = NodePath("../roundabout3")
 
 [node name="Path2D" type="Path2D" parent="Road-down" node_paths=PackedStringArray("Source", "Target")]
@@ -103,15 +112,15 @@ position = Vector2(1073, 365)
 curve = SubResource("Curve2D_kbgmy")
 script = ExtResource("1_6bctl")
 Source = NodePath("../../roundabout3")
-Target = NodePath("../../Circle")
+Target = NodePath("../../roundabout1")
 
-[node name="road-up" type="Path2D" parent="." node_paths=PackedStringArray("Source")]
+[node name="road-dead-end" type="Path2D" parent="." node_paths=PackedStringArray("Source")]
 position = Vector2(-30, 30)
 curve = SubResource("Curve2D_q5sb6")
 script = ExtResource("1_6bctl")
-Source = NodePath("../Circle")
+Source = NodePath("../roundabout1")
 
-[node name="Circle" type="Node2D" parent="."]
+[node name="roundabout1" type="Node2D" parent="."]
 position = Vector2(742, 431)
 script = ExtResource("6_nax8h")
 
@@ -134,3 +143,15 @@ AttachedRoad = NodePath("../Road-down")
 [node name="roundabout3" type="Node2D" parent="."]
 position = Vector2(977, 565)
 script = ExtResource("6_nax8h")
+
+[node name="road-up-left" type="Path2D" parent="." node_paths=PackedStringArray("Source", "Target")]
+position = Vector2(-2, 111)
+curve = SubResource("Curve2D_3ooqn")
+script = ExtResource("1_6bctl")
+Source = NodePath("../roundabout1")
+Target = NodePath("../roundabout4")
+
+[node name="roundabout4" type="Node2D" parent="." node_paths=PackedStringArray("OutRoads")]
+position = Vector2(564, 507)
+script = ExtResource("6_nax8h")
+OutRoads = [NodePath("../Road1")]

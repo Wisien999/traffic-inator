@@ -43,13 +43,13 @@ public partial class IdealTargetedCar: Car
 
 	public Building Target { get; private set; }
 	public List<Road> PlannedPath { get; private set; }
-	public int CurrentPathIndex = 0;
+	public int NextEdgeIdx = 0;
 
 	public IdealTargetedCar(Building target, List<Road> path)
 	{
 		Target = target;
 		PlannedPath = path;
-		CurrentPathIndex = 0;
+		NextEdgeIdx = 0;
 		Loop = false;
 	}
 }

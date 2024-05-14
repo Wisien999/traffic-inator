@@ -9,6 +9,8 @@ public partial class Building : Node2D {
 	[Export]
 	public Road AttachedRoad;
 
+	private GlobalMapData GlobalMapData => GetNode<GlobalMapData>("/root/GlobalMapData");
+
 	private Timer spawnTimer = new();
 
 
@@ -16,7 +18,8 @@ public partial class Building : Node2D {
 		AddChild(spawnTimer);
 		spawnTimer.Connect("timeout", Callable.From(SpawnCar));
 		spawnTimer.Start(SpawnRate);
-		GD.Print(spawnTimer);
+		GD.Print("Building ready");
+		GD.Print(GlobalMapData);
 	}
 
 
@@ -27,7 +30,10 @@ public partial class Building : Node2D {
 
 	public void SpawnCar() {
 		GD.Print("Spawning car");
-		var res = AttachedRoad?.AddCarAt(this, new RandomCar() { Color = Colors.Gold});
+		var newCar = GlobalMapData?.CarManager?.randomTargetedCar(AttachedRoad.Target);
+		newCar.Color = Colors.Gold;
+		var res = AttachedRoad?.AddCarAt(this, newCar);
+		// var res = AttachedRoad?.AddCarAt(this, new RandomCar() { Color = Colors.Gold});
 		GD.Print("Spawned car ", res);
 	}
 }
