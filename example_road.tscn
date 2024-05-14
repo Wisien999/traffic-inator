@@ -125,12 +125,13 @@ script = ExtResource("4_nvmr2")
 [node name="Building1" type="Node2D" parent="." node_paths=PackedStringArray("AttachedRoad")]
 position = Vector2(647, 520)
 script = ExtResource("7_jy6g6")
-SpawnRate = 3
+SpawnRate = 1
 AttachedRoad = NodePath("../Road1")
 
 [node name="Building2" type="Node2D" parent="." node_paths=PackedStringArray("AttachedRoad")]
 position = Vector2(782, 580)
 script = ExtResource("7_jy6g6")
+SpawnRate = 2
 AttachedRoad = NodePath("../Road-down")
 
 [node name="roundabout3" type="Node2D" parent="."]

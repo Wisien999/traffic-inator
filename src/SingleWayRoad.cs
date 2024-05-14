@@ -34,7 +34,7 @@ public partial class SingleWayRoad : Road
 		foreach (var car in _cars)
 		{
 			var lastCarPos = car.Progress;
-			car.Progress = Math.Min(lastAvailablePos, lastCarPos + 200 * (float)delta);
+			car.Progress = Math.Min(lastAvailablePos, lastCarPos + 300 * (float)delta);
 			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			if(lastCarPos != car.Progress)
 				car.QueueRedraw();
@@ -62,9 +62,12 @@ public partial class SingleWayRoad : Road
 			}
 			else if (Target != null)
 			{
-				_cars.RemoveFirst();
-				RemoveChild(firstCar.Value);
-				Target.CarEntered(this, firstCar.Value);
+				var res = Target.CarEntered(this, firstCar.Value);
+				if (res) {
+					_cars.RemoveFirst();
+					RemoveChild(firstCar.Value);
+				}
+
 			}
 		}
 		

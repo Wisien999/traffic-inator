@@ -11,6 +11,8 @@ public partial class Roundabout: RoadConnection
 	override public Array<Road> OutRoads { get; set; } = new();
 	private Queue<(Car, DateTime, Road)> cars = new();
 	private int lastUpdateTime = 0;
+	[Export]
+	int MaxCars = 2;
 
 	private Random random = new();
 
@@ -40,7 +42,7 @@ public partial class Roundabout: RoadConnection
 
 		var (car, entranceTime, source) = cars.Peek();
 
-		if (entranceTime.AddSeconds(1) > DateTime.Now)
+		if (entranceTime.AddSeconds(3) > DateTime.Now)
 		{
 			return;
 		}
@@ -106,9 +108,13 @@ public partial class Roundabout: RoadConnection
 	// }
 
 
-	override public void CarEntered(Road from, Car car)
+	override public bool CarEntered(Road from, Car car)
 	{
+		if (cars.Count >= MaxCars) return false;
+
 		cars.Enqueue((car, DateTime.Now, from));
 		QueueRedraw();
+
+		return true;
 	}
 }
