@@ -145,10 +145,9 @@ script = ExtResource("1_6bctl")
 Source = NodePath("../roundabout1")
 Target = NodePath("../roundabout4")
 
-[node name="roundabout4" type="Node2D" parent="." node_paths=PackedStringArray("OutRoads")]
+[node name="roundabout4" type="Node2D" parent="."]
 position = Vector2(564, 507)
 script = ExtResource("6_nax8h")
-OutRoads = [NodePath("../Road1")]
 
 [node name="road-down-back" type="Path2D" parent="." node_paths=PackedStringArray("Source", "Target")]
 position = Vector2(1006, 482)
