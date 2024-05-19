@@ -9,8 +9,10 @@ public partial class Building : Node2D
     public int SpawnRate = 5;
     [Export]
     public Road AttachedRoad;
-
+    [Export]
     public Vector2[] Outline { get; set; }
+    [Export]
+    public Color OutlineColor { get; set; } = Colors.Olive;
 
     private GlobalMapData GlobalMapData => GetNode<GlobalMapData>("/root/GlobalMapData");
 
@@ -31,7 +33,7 @@ public partial class Building : Node2D
     {
         if (Outline != null)
         {
-            DrawPolygon(Outline, new Color[] { Colors.Olive });
+            DrawPolygon(Outline, new Color[] { OutlineColor });
         }
         else
         {
