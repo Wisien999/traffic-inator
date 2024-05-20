@@ -232,7 +232,7 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Road>, List<Building
 
 }
 private static Road ClosestRoad(List<Road> roads, Godot.Vector2 point) =>
-  roads.MaxBy<Road, float>(road => (road.Curve.GetClosestPoint(point) - point).Length());
+  roads.MinBy<Road, float>(road => (road.Curve.GetClosestPoint(point) - point).Length());
 
 
 

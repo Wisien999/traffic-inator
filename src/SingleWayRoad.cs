@@ -24,7 +24,7 @@ public partial class SingleWayRoad : Road
         // 	Curve.GetClosestPoint(new Vector2(0, 0)),
         // 	Curve.GetClosestOffset(new Vector2(0, 0))
         // 	);
-        SpawnCar();
+        // SpawnCar();
     }
 
     public override void _Process(double delta)
