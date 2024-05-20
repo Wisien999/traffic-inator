@@ -153,21 +153,20 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Road>, List<Building
         if (singleWay)
         {
             road = new SingleWayRoad() { Source = start, Target = end, Curve = curve };
-            roads.Add(road);
         }
         else
         {
             road = new TwoWayRoad() { Source = start, Target = end, Curve = curve };
-            roads.Add(road);
         }
+        roads.Add(road);
         var roadName = way.Tags.GetValue("name");
         if (roadName != null)
         {
             if (!roadsByName.ContainsKey(roadName))
             {
-                roadsByName.Add(roadName, new List<Road>());
+                roadsByName[roadName] = new List<Road>();
             }
-            roadsByName[roadName].Append(road);
+            roadsByName[roadName].Add(road);
         }
     }
     var buildingFiltered = src.Where(BuildingFilter).ToComplete().ToList();
@@ -177,12 +176,12 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Road>, List<Building
       .ToList();
 
     Godot.GD.Print("Parsed file ", file.FullName, " created ", nodes.Count, " Points ", roads.Count, " roads and ", buildings.Count, " buildings");
-    var buildingTypes = buildings.Select(way => way.Tags.GetValue("building")).ToHashSet();
+//    var buildingTypes = buildings.Select(way => way.Tags.GetValue("building")).ToHashSet();
 
-    foreach (var buildingType in buildingTypes)
-    {
-        Godot.GD.Print(buildingType);
-    }
+//    foreach (var buildingType in buildingTypes)
+//    {
+//        Godot.GD.Print(buildingType);
+//    }
 
     var root = new Godot.Node2D();
     foreach (var road in roads)
@@ -218,11 +217,11 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Road>, List<Building
         {
             Position = buildingPosition,
             Outline = translatedPoints,
-            AttachedRoad = road,
             OutlineColor =  BuildingColors[building.Tags.GetValue("building")]
         };
+        buildingObject.AttachedRoad = road;
         root.AddChild(buildingObject);
-        buildingObjects.Append(buildingObject);
+        buildingObjects.Add(buildingObject);
     }
     var graph = new AdjacencyGraph<RoadConnection, Road>();
     graph.AddVertexRange(nodes.Values);
