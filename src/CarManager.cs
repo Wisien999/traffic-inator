@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Godot;
 using QuikGraph;
 using QuikGraph.Algorithms.ShortestPath;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Trafficinator;
 
@@ -12,32 +13,42 @@ public class CarManager
 	private IMutableGraph<RoadConnection, Lane> map;
 	private List<Building> allBuildings;
 	FloydWarshallAllShortestPathAlgorithm<RoadConnection, Lane> shortestPathAlgorithm;
+	private MemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
+	private Dictionary<Road, List<Building>> buildingsOnRoad = new Dictionary<Road, List<Building>>();
 
 	public CarManager(AdjacencyGraph<RoadConnection, Lane> map, List<Building> allBuildings)
 	{
+		var cacheOptions = new MemoryCacheOptions();
+		cacheOptions.SizeLimit = 1000;
+		memoryCache = new MemoryCache(cacheOptions);
 		this.map = map;
 		this.allBuildings = allBuildings;
 
 		shortestPathAlgorithm = new FloydWarshallAllShortestPathAlgorithm<RoadConnection, Lane>(
 				map,
-				road => road.Length
+				lane => lane.Length
 			);
 		shortestPathAlgorithm.Compute();
 	}
 
+	private List<Building> getAccessibleBuildingsFor(RoadConnection point) {
+		return memoryCache.GetOrCreate<List<Building>>(
+			point, 
+			entry => {
+				entry.Size = 1;
+				return allBuildings.Where(b => shortestPathAlgorithm.TryGetDistance(point, b.AttachedRoad.Source, out _)).ToList();
+			}
+		);
+	}
+
 	public bool TryRandomTargetedCar(RoadConnection start, out Car car)
 	{
-		// // get all buildings with connection from start
-		// var allPossibleBuildings = this.allBuildings
-		// 	.Where(building => shortestPathAlgorithm.TryGetPath(start, building.AttachedRoad.Source, out _))
-		// 	.ToList();
-		//
-		// GD.Print("All possible buildings: ", allPossibleBuildings.Count, " from ", allBuildings.Count);
+		car = null;
+		var possibleBuildings = getAccessibleBuildingsFor(start);
+		// GD.Print("All possible buildings: ", possibleBuildings.Count, " from ", allBuildings.Count);
+		if (possibleBuildings.Count == 0) return false;
 
-		// GD.Print("Random targeted car");
-		var CarTarget = allBuildings[new Random().Next(allBuildings.Count)];
-
-
+		var CarTarget = possibleBuildings[new Random().Next(possibleBuildings.Count)];
 		var targetConneciton = CarTarget.AttachedRoad.Source;
 		
 		var pathExists = shortestPathAlgorithm.TryGetPath(start, targetConneciton, out var path);
@@ -55,7 +66,6 @@ public class CarManager
 
 		if (!pathExists)
 		{
-			car = null;
 			return false;
 		}
 

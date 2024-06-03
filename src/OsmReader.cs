@@ -227,7 +227,12 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Lane>, List<Building
 	}
 	var graph = new AdjacencyGraph<RoadConnection, Lane>();
 	graph.AddVertexRange(nodes.Values);
-	graph.AddEdgeRange(roads.SelectMany(road => road.Lanes));
+
+	var lanes = roads.SelectMany(road => road.Lanes);
+
+	lanes.Take(6).ToList().ForEach(lane => Godot.GD.Print(lane.Source.Position, " ", lane.Target.Position));
+
+	graph.AddEdgeRange(lanes);
 
 	return (root, graph, buildingObjects);
 
