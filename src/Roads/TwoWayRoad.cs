@@ -71,9 +71,6 @@ public partial class TwoWayRoad : Road
 	
 		try
 		{
-			GD.Print("Curve points: ", Curve.PointCount);
-	
-	
 			curve1.AddPoint(MovedToRight(Curve.GetPointPosition(1) - Curve.GetPointPosition(0), Curve.GetPointPosition(0)));
 			for (int i = 1; i < Curve.PointCount - 1; i++)
 			{

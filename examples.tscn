@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bd20c6ltx6vbu"]
+[gd_scene load_steps=5 format=3 uid="uid://dblqos17gwitv"]
 
 [ext_resource type="Script" path="res://src/dev/dev_scene.cs" id="1_o60w5"]
 [ext_resource type="Script" path="res://src/Roundabout.cs" id="2_irgxg"]

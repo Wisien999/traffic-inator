@@ -46,8 +46,11 @@ public partial class Building : Node2D
 	{
 		// GD.Print("Spawning car");
 		Car newCar = null;
-		GD.Print("Trying to spawn car, attached:", AttachedRoad);
 		var carCreated = GlobalMapData?.CarManager?.TryRandomTargetedCar(AttachedRoad.Target, out newCar);
+		if (!carCreated.GetValueOrDefault(false))
+		{
+			GD.Print("Car not created");
+		}
 		if (carCreated.GetValueOrDefault(false) && newCar != null)
 		{
 			newCar.Color = Colors.Gold;

@@ -84,7 +84,7 @@ public partial class Roundabout : RoadConnection
 	{
 		if (car.NextEdgeIdx < car.PlannedPath.Count)
 		{
-			GD.Print("Dispatching car to next road");
+			// GD.Print("Dispatching car to next road");
 			var nextRoad = car.PlannedPath[car.NextEdgeIdx];
 
 			var res = nextRoad.AddCar(this, car);
@@ -95,23 +95,12 @@ public partial class Roundabout : RoadConnection
 			return res;
 		}
 
-		GD.Print("Dispatching car to target");
+		// GD.Print("Dispatching car to target");
 		car.NextEdgeIdx++;
 		var res2 = car.Target.AttachedRoad.AddCar(this, car);
 
 		return res2;
 	}
-
-	// private Road findRoadTo(RoadConnection target) {
-	// 	foreach (var road in OutRoads)
-	// 	{
-	// 		if (road.Target == target)
-	// 		{
-	// 			return road;
-	// 		}
-	// 	}
-	// 	return null;
-	// }
 
 
 	override public bool CarEntered(Road from, Car car)

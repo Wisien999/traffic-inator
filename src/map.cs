@@ -39,6 +39,5 @@ public partial class map : Node2D
 
 	public override void _Draw()
 	{
-		GD.Print("Drawing");
 	}
 }
