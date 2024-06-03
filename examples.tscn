@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://bd20c6ltx6vbu"]
+
+[ext_resource type="Script" path="res://src/dev/dev_scene.cs" id="1_o60w5"]
+[ext_resource type="Script" path="res://src/Roundabout.cs" id="2_irgxg"]
+[ext_resource type="Script" path="res://src/Roads/SingleWayRoad.cs" id="3_x1rox"]
+
+[sub_resource type="Curve2D" id="Curve2D_usnvd"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 79, 62, 0, 0, 0, 0, 192, 38, 0, 0, 0, 0, 323, 70, 0, 0, 0, 0, 323, 70)
+}
+point_count = 4
+
+[node name="examples" type="Node2D"]
+script = ExtResource("1_o60w5")
+
+[node name="round_up_left" type="Node2D" parent="." node_paths=PackedStringArray("OutRoads")]
+position = Vector2(78, 61)
+script = ExtResource("2_irgxg")
+OutRoads = [NodePath("../s_road_up")]
+
+[node name="round_down" type="Node2D" parent="."]
+position = Vector2(180, 204)
+script = ExtResource("2_irgxg")
+
+[node name="round_up_right" type="Node2D" parent="."]
+position = Vector2(322, 68)
+script = ExtResource("2_irgxg")
+
+[node name="s_road_up" type="Path2D" parent="." node_paths=PackedStringArray("Source", "Target")]
+curve = SubResource("Curve2D_usnvd")
+script = ExtResource("3_x1rox")
+Source = NodePath("../round_up_left")
+Target = NodePath("../round_up_right")

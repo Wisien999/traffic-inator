@@ -9,52 +9,65 @@ namespace Trafficinator;
 
 public class CarManager
 {
-    private IMutableGraph<RoadConnection, Road> map;
-    private List<Building> allBuildings;
-    FloydWarshallAllShortestPathAlgorithm<RoadConnection, Road> shortestPathAlgorithm;
+	private IMutableGraph<RoadConnection, Lane> map;
+	private List<Building> allBuildings;
+	FloydWarshallAllShortestPathAlgorithm<RoadConnection, Lane> shortestPathAlgorithm;
 
-    public CarManager(AdjacencyGraph<RoadConnection, Road> map, List<Building> allBuildings)
-    {
-        this.map = map;
-        this.allBuildings = allBuildings;
+	public CarManager(AdjacencyGraph<RoadConnection, Lane> map, List<Building> allBuildings)
+	{
+		this.map = map;
+		this.allBuildings = allBuildings;
 
-        shortestPathAlgorithm = new FloydWarshallAllShortestPathAlgorithm<RoadConnection, Road>(
-                map,
-                road => road.Length
-            );
-        shortestPathAlgorithm.Compute();
-    }
+		shortestPathAlgorithm = new FloydWarshallAllShortestPathAlgorithm<RoadConnection, Lane>(
+				map,
+				road => road.Length
+			);
+		shortestPathAlgorithm.Compute();
+	}
 
-    public Car randomTargetedCar(RoadConnection start)
-    {
-        // GD.Print("Random targeted car");
-        var CarTarget = allBuildings[new Random().Next(allBuildings.Count)];
+	public bool TryRandomTargetedCar(RoadConnection start, out Car car)
+	{
+		// // get all buildings with connection from start
+		// var allPossibleBuildings = this.allBuildings
+		// 	.Where(building => shortestPathAlgorithm.TryGetPath(start, building.AttachedRoad.Source, out _))
+		// 	.ToList();
+		//
+		// GD.Print("All possible buildings: ", allPossibleBuildings.Count, " from ", allBuildings.Count);
 
-        // FIXME: make it work for two way road
-        var targetConneciton = CarTarget.AttachedRoad.Source;
-        // GD.Print("Target connection: ", targetConneciton.Name);
+		// GD.Print("Random targeted car");
+		var CarTarget = allBuildings[new Random().Next(allBuildings.Count)];
 
-        var pathExists = shortestPathAlgorithm.TryGetPath(start, targetConneciton, out var path);
-        if (!pathExists)
-        {
-            GD.Print("No path found");
-            throw new Exception("No path found");
-        }
 
-        // GD.Print("Path found: ");
-        // foreach (var road in path) {
-        // GD.Print("Road: ", road.Name);
-        // }
-        // GD.Print("");
+		var targetConneciton = CarTarget.AttachedRoad.Source;
+		
+		var pathExists = shortestPathAlgorithm.TryGetPath(start, targetConneciton, out var path);
 
-        var car = new IdealTargetedCar(CarTarget, path.ToList());
-        car.NextEdgeIdx = 0;
+		// fallback for two way road
+		if (!pathExists && !CarTarget.AttachedRoad.IsDirected)
+		{
+			targetConneciton = CarTarget.AttachedRoad.Target;
+			pathExists = shortestPathAlgorithm.TryGetPath(
+					start,
+					targetConneciton,
+					out path
+			);
+		}
 
-        return car;
-    }
+		if (!pathExists)
+		{
+			car = null;
+			return false;
+		}
 
-    public Car randomCar(RoadConnection start)
-    {
-        return new RandomCar();
-    }
+		car = new IdealTargetedCar(CarTarget, path.Select(lane => lane.Road).ToList()) {
+			NextEdgeIdx = 0
+		};
+
+		return true;
+	}
+
+	public Car randomCar(RoadConnection start)
+	{
+		return new RandomCar();
+	}
 }

@@ -1,10 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://bjj52vhd1kuyt"]
+[gd_scene load_steps=15 format=3 uid="uid://bp4e5rwtlj5no"]
 
-[ext_resource type="Script" path="res://src/SingleWayRoad.cs" id="1_6bctl"]
+[ext_resource type="Script" path="res://src/Roads/SingleWayRoad.cs" id="1_6bctl"]
 [ext_resource type="Script" path="res://src/dev/dev_scene.cs" id="1_k4ti2"]
-[ext_resource type="Script" path="res://src/SpawnButton.cs" id="2_yxx8x"]
-[ext_resource type="Script" path="res://src/IsAtEndButton.cs" id="3_3277t"]
-[ext_resource type="Script" path="res://src/TwoWayRoad.cs" id="4_nvmr2"]
+[ext_resource type="Script" path="res://src/Roads/TwoWayRoad.cs" id="4_nvmr2"]
 [ext_resource type="Script" path="res://src/Intersection.cs" id="5_0wjot"]
 [ext_resource type="Script" path="res://src/Roundabout.cs" id="6_nax8h"]
 [ext_resource type="Script" path="res://src/Building.cs" id="7_jy6g6"]
@@ -63,23 +61,6 @@ script = ExtResource("1_k4ti2")
 [node name="Road" type="Path2D" parent="."]
 curve = SubResource("Curve2D_ko7gh")
 script = ExtResource("1_6bctl")
-
-[node name="Button" type="Button" parent="Road"]
-visible = false
-offset_left = 953.0
-offset_top = 138.0
-offset_right = 1110.0
-offset_bottom = 259.0
-text = "Spawn Car"
-script = ExtResource("2_yxx8x")
-
-[node name="CheckButton" type="CheckButton" parent="Road"]
-offset_left = 971.0
-offset_top = 67.0
-offset_right = 1116.0
-offset_bottom = 98.0
-text = "DeleteAtEnd"
-script = ExtResource("3_3277t")
 
 [node name="TwoWayRoad" type="Path2D" parent="."]
 position = Vector2(139, 576)
