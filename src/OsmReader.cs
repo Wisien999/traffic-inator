@@ -131,26 +131,107 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Lane>, List<Building
 		.Cast<CompleteWay>()
 		.SelectMany(way => new[] { way.Nodes[0], way.Nodes[^1] })
 		.DistinctBy(node => node.Id)
-		.ToImmutableDictionary(node => node.Id, node => new Roundabout() { Position = Node2Pos(node, centerX, centerY, scaleX, scaleY) });
-	var ways = filtered
+		.ToDictionary(node => node.Id, node => (
+          Position: Node2Pos(node, centerX, centerY, scaleX, scaleY),
+          OnewayInRoads: new HashSet<int>(),
+          OnewayOutRoads: new HashSet<int>(),
+          TwoWayRoads: new HashSet<int>()
+          ));
+   var ways = filtered
 		.Where(geo => geo.Type == OsmGeoType.Way)
 		.Cast<CompleteWay>()
-		.Where(way => way.Nodes[0].Id != null && way.Nodes[^1].Id != null);
+		.Where(way => way.Nodes[0].Id != null && way.Nodes[^1].Id != null)
+    .Select( (way, index) => (
+          Oneway: way.Tags.Contains("oneway", "yes"),
+          StartId: way.Nodes[0].Id,
+          EndId: way.Nodes[^1].Id, 
+          Points: way.Nodes.Select(node => Node2Pos(node, centerX, centerY, scaleX, scaleY)).ToList(),
+          Names: new HashSet<string> { way.Tags.GetValue("name") },
+          Ids: new HashSet<int> { index },
+          MinId: index)
+    )
+    .ToList();
+  foreach (var way in ways) {
+    var index = way.Ids.First();
+    if (way.Oneway) {
+      nodes[way.StartId].OnewayOutRoads.Add(index);
+      nodes[way.EndId].OnewayInRoads.Add(index);
+    } else {
+      nodes[way.StartId].TwoWayRoads.Add(index);
+      nodes[way.EndId].TwoWayRoads.Add(index);
+    }
+  }
+  var nodeIdsToRemove = new List<long?>();
+  foreach(var node in nodes) {
+    var onewayInCount = node.Value.OnewayInRoads.Count;
+    var onewayOutCount = node.Value.OnewayOutRoads.Count;
+    var twowayCount = node.Value.TwoWayRoads.Count;
+    if (twowayCount == 0 && onewayInCount == 1 && onewayOutCount == 1) {
+      var roadIn = ways[node.Value.OnewayInRoads.First()];
+      var roadOut = ways[node.Value.OnewayOutRoads.First()];
+      
+      roadIn.Names.UnionWith(roadOut.Names);
+      roadIn.Ids.UnionWith(roadOut.Ids);
+      roadIn.EndId = roadOut.EndId;
+      roadIn.Points.AddRange(roadOut.Points.Skip(1));
+      roadIn.MinId = Math.Min(roadIn.MinId, roadOut.MinId);
+      foreach(var id in roadIn.Ids) {
+        ways[id] = roadIn;
+      }
+
+      nodeIdsToRemove.Add(node.Key);
+    }
+    else if (twowayCount == 2 && onewayOutCount == 0 && onewayInCount == 0) {
+      var roadIds = node.Value.TwoWayRoads.ToList();
+      var roadDst = ways[roadIds[0]];
+      var roadSrc = ways[roadIds[1]];
+
+      roadDst.Names.UnionWith(roadSrc.Names);
+      roadDst.Ids.UnionWith(roadSrc.Ids);
+      if (roadDst.EndId != node.Key) {
+        roadDst.Points.Reverse();
+        (roadDst.StartId, roadDst.EndId) = (roadDst.EndId, roadDst.StartId);
+      }
+      if (roadSrc.StartId != node.Key) {
+        roadSrc.Points.Reverse();
+        (roadSrc.StartId, roadSrc.EndId) = (roadSrc.EndId, roadSrc.StartId);
+      }
+      roadDst.Points.AddRange(roadSrc.Points.Skip(1));
+      roadDst.EndId = roadSrc.EndId;
+      roadDst.MinId = Math.Min(roadDst.MinId, roadSrc.MinId);
+
+      foreach(var id in roadDst.Ids) {
+        ways[id] = roadDst;
+      }
+
+      nodeIdsToRemove.Add(node.Key);
+    }
+  }
+  foreach(var id in nodeIdsToRemove) {
+    nodes.Remove(id);
+  }
+  
+  var deduplicatedWays = ways
+    .Where((way, idx) => way.MinId == idx)
+    .Where(way => nodes.ContainsKey(way.StartId) && nodes.ContainsKey(way.EndId))
+    .Where(way => way.StartId != way.EndId)
+    .ToList();
+
+  var intersections = nodes.ToImmutableDictionary(kv => kv.Key, kv => new Roundabout { Position = kv.Value.Position });
+
 	var roads = new List<Road>();
 	var roadsByName = new Dictionary<String, List<Road>>();
-	foreach (var way in ways)
+	foreach (var way in deduplicatedWays)
 	{
-		var start = nodes[way.Nodes[0].Id];
-		var end = nodes[way.Nodes[^1].Id];
+    var start = intersections[way.StartId];
+    var end = intersections[way.EndId];
 		var curve = new Godot.Curve2D();
-		foreach (var node in way.Nodes)
-		{
-			curve.AddPoint(Node2Pos(node, centerX, centerY, scaleX, scaleY));
+		foreach(var point in way.Points)
+    {
+			curve.AddPoint(point);
 		}
-
-		var singleWay = way.Tags.Contains("oneway", "yes");
 		Road road;
-		if (singleWay)
+		if (way.Oneway)
 		{
 			road = new SingleWayRoad(curve, start, end);
 		}
@@ -159,16 +240,19 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Lane>, List<Building
 			road = new TwoWayRoad(curve, start, end);
 		}
 		roads.Add(road);
-		var roadName = way.Tags.GetValue("name");
-		if (roadName != null)
-		{
-			road.Name = "Street" + roadName;
-			if (!roadsByName.ContainsKey(roadName))
-			{
-				roadsByName[roadName] = new List<Road>();
-			}
-			roadsByName[roadName].Add(road);
-		}
+    foreach(var roadName in way.Names) 
+    {
+      if (roadName != null)
+		  {
+			  road.Name = "Street" + roadName;
+			  if (!roadsByName.ContainsKey(roadName))
+			  {
+				  roadsByName[roadName] = new List<Road>();
+			  }
+			  roadsByName[roadName].Add(road);
+		  }
+    }
+		
 	}
 	var buildingFiltered = src.Where(BuildingFilter).ToComplete().ToList();
 	var buildings = buildingFiltered
@@ -176,7 +260,7 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Lane>, List<Building
 	  .Cast<CompleteWay>()
 	  .ToList();
 
-	Godot.GD.Print("Parsed file ", file.FullName, " created ", nodes.Count, " Points ", roads.Count, " roads and ", buildings.Count, " buildings");
+	Godot.GD.Print("Parsed file ", file.FullName, " created ", intersections.Count, " Points ", roads.Count, " roads and ", buildings.Count, " buildings, removed ", nodeIdsToRemove.Count, " passthrough nodes");
 //    var buildingTypes = buildings.Select(way => way.Tags.GetValue("building")).ToHashSet();
 
 //    foreach (var buildingType in buildingTypes)
@@ -189,9 +273,9 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Lane>, List<Building
 	{
 		root.AddChild(road);
 	}
-	foreach (var node in nodes.Values)
+	foreach (var intersection in intersections.Values)
 	{
-		root.AddChild(node);
+		root.AddChild(intersection);
 	}
 	var buildingObjects = new List<Building>();
 	foreach (var building in buildings)
@@ -226,13 +310,9 @@ public static (Godot.Node2D, AdjacencyGraph<RoadConnection, Lane>, List<Building
 		buildingObjects.Add(buildingObject);
 	}
 	var graph = new AdjacencyGraph<RoadConnection, Lane>();
-	graph.AddVertexRange(nodes.Values);
 
-	var lanes = roads.SelectMany(road => road.Lanes);
-
-	lanes.Take(6).ToList().ForEach(lane => Godot.GD.Print(lane.Source.Position, " ", lane.Target.Position));
-
-	graph.AddEdgeRange(lanes);
+	graph.AddVertexRange(intersections.Values);
+	graph.AddEdgeRange(roads.SelectMany(road => road.Lanes));
 
 	return (root, graph, buildingObjects);
 
