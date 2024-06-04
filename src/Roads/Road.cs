@@ -35,7 +35,7 @@ public abstract partial class Road : Path2D
         Curve = curve;
     }
 
-    public Road() {}
+    public Road() { }
 
 
     public double Length => Lanes[0].Length;
