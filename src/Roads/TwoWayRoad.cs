@@ -17,7 +17,7 @@ public partial class TwoWayRoad : Road
 
     override public List<Lane> Lanes => new List<Lane> { lane1, lane2 };
 
-    private static float SpaceDistance = 6;
+    private static float SpaceDistance = 3;
 
     public override bool IsDirected => false;
 
@@ -117,7 +117,7 @@ public partial class TwoWayRoad : Road
     {
         var baDirection = b.DirectionTo(a);
         var bcDirection = b.DirectionTo(c);
-        var direction = baDirection + bcDirection;
+        var direction = (baDirection + bcDirection).Normalized();
         var move = direction * SpaceDistance;
 
         var p0 = b + move;
