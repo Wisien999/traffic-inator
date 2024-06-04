@@ -24,12 +24,12 @@ public partial class Roundabout : RoadConnection
     public override void _Draw()
     {
         // DrawCircle(Position, 10, Colors.Black);
-        DrawCircle(new Vector2(0, 0), 10, Colors.Black); // this actualy draws on node position
+        DrawCircle(new Vector2(0, 0), 5, Colors.Black); // this actualy draws on node position
 
         if (cars.Count > 0)
         {
             var (car, _, _) = cars.Peek();
-            DrawRect(new Rect2(-5, -5, 10, 10), car.Color);
+            DrawRect(new Rect2(-2.5f, -2.5f, 5, 5), car.Color);
             // DrawRect(new Rect2(-10, -10, 20, 20), Colors.Red);
         }
     }
@@ -42,7 +42,7 @@ public partial class Roundabout : RoadConnection
 
         var (car, entranceTime, source) = cars.Peek();
 
-        if (entranceTime.AddSeconds(3) > DateTime.Now)
+        if (entranceTime.AddSeconds(0.1) > DateTime.Now)
         {
             return;
         }
