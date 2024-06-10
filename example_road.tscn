@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bp4e5rwtlj5no"]
+[gd_scene load_steps=16 format=3 uid="uid://bp4e5rwtlj5no"]
 
 [ext_resource type="Script" path="res://src/Roads/SingleWayRoad.cs" id="1_6bctl"]
 [ext_resource type="Script" path="res://src/dev/dev_scene.cs" id="1_k4ti2"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://src/Intersection.cs" id="5_0wjot"]
 [ext_resource type="Script" path="res://src/Roundabout.cs" id="6_nax8h"]
 [ext_resource type="Script" path="res://src/Building.cs" id="7_jy6g6"]
+[ext_resource type="Texture2D" uid="uid://cks7108vxokmr" path="res://assets/car/yellow.png" id="7_tltl3"]
 
 [sub_resource type="Curve2D" id="Curve2D_ko7gh"]
 _data = {
@@ -136,3 +137,8 @@ curve = SubResource("Curve2D_kbgmy")
 script = ExtResource("1_6bctl")
 Source = NodePath("../roundabout3")
 Target = NodePath("../roundabout1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(82, 55)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("7_tltl3")

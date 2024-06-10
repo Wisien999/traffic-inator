@@ -23,7 +23,7 @@ public partial class Lane : Path2D, IEdge<RoadConnection>
         foreach (var car in _cars)
         {
             var lastCarPos = car.Progress;
-            car.Progress = Math.Min(lastAvailablePos, lastCarPos + 300 * (float)delta);
+            car.Progress = Math.Min(lastAvailablePos, lastCarPos + car.Speed * (float)delta);
             // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (lastCarPos != car.Progress)
                 car.QueueRedraw();
