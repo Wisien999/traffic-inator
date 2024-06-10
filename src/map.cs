@@ -13,7 +13,7 @@ public partial class map : Node2D
 	public override void _Ready()
 	{
 		this.Name = "Map";
-		using var mapResource = FileAccess.Open("res://cracow_centre.osm", FileAccess.ModeFlags.Read);
+		using var mapResource = FileAccess.Open("res://map.osm", FileAccess.ModeFlags.Read);
 		var path = mapResource.GetPathAbsolute();
 		var (root, graph, buildings) = OsmReader.Parse(new System.IO.FileInfo(path), 50000, 50000);
 
