@@ -129,7 +129,7 @@ public class OsmReader
 			.GetValueOrDefault(0);
 		var nodes = filtered.Where(geo => geo.Type == OsmGeoType.Way)
 			.Cast<CompleteWay>()
-			.SelectMany(way => new[] { way.Nodes[0], way.Nodes[^1] })
+			.SelectMany(way => way.Nodes)
 			.DistinctBy(node => node.Id)
 			.ToDictionary(node => node.Id, node => (
 			  Position: Node2Pos(node, centerX, centerY, scaleX, scaleY),
@@ -141,12 +141,13 @@ public class OsmReader
 			 .Where(geo => geo.Type == OsmGeoType.Way)
 			 .Cast<CompleteWay>()
 			 .Where(way => way.Nodes[0].Id != null && way.Nodes[^1].Id != null)
-		 .Select((way, index) => (
-			   Oneway: way.Tags.Contains("oneway", "yes"),
-			   StartId: way.Nodes[0].Id,
-			   EndId: way.Nodes[^1].Id,
-			   Points: way.Nodes.Select(node => Node2Pos(node, centerX, centerY, scaleX, scaleY)).ToList(),
-			   Names: new HashSet<string> { way.Tags.GetValue("name") },
+			 .SelectMany(SplitWay)
+			 .Select((arg, index) => (
+			   Oneway: arg.way.Tags.Contains("oneway", "yes"),
+			   StartId: arg.start.Id,
+			   EndId: arg.end.Id,
+			   Points: (new []{arg.start, arg.end}).Select(node => Node2Pos(node, centerX, centerY, scaleX, scaleY)).ToList(),
+			   Names: new HashSet<string> { arg.way.Tags.GetValue("name") },
 			   Ids: new HashSet<int> { index },
 			   MinId: index)
 		 )
@@ -156,13 +157,13 @@ public class OsmReader
 			var index = way.Ids.First();
 			if (way.Oneway)
 			{
-				nodes[way.StartId].OnewayOutRoads.Add(index);
-				nodes[way.EndId].OnewayInRoads.Add(index);
+			nodes[way.StartId].OnewayOutRoads.Add(index);
+			nodes[way.EndId].OnewayInRoads.Add(index);
 			}
 			else
 			{
-				nodes[way.StartId].TwoWayRoads.Add(index);
-				nodes[way.EndId].TwoWayRoads.Add(index);
+			nodes[way.StartId].TwoWayRoads.Add(index);
+			nodes[way.EndId].TwoWayRoads.Add(index);
 			}
 		}
 		var nodeIdsToRemove = new List<long?>();
@@ -173,8 +174,8 @@ public class OsmReader
 			var twowayCount = node.Value.TwoWayRoads.Count;
 			if (twowayCount == 0 && onewayInCount == 1 && onewayOutCount == 1)
 			{
-				var roadIn = ways[node.Value.OnewayInRoads.First()];
-				var roadOut = ways[node.Value.OnewayOutRoads.First()];
+			var roadIn = ways[node.Value.OnewayInRoads.First()];
+			var roadOut = ways[node.Value.OnewayOutRoads.First()];
 
 				roadIn.Names.UnionWith(roadOut.Names);
 				roadIn.Ids.UnionWith(roadOut.Ids);
@@ -329,6 +330,13 @@ public class OsmReader
 		return (root, graph, buildingObjects);
 
 	}
+
+	private static IEnumerable<(CompleteWay way,Node start,Node end)> SplitWay(CompleteWay way) {
+					int n_subways = way.Nodes.Length - 1;
+					for(int i = 0; i < n_subways; i++) {
+					  yield return (way: way, start: way.Nodes[i], end: way.Nodes[i+1]);
+					}
+				 }
 	private static Road ClosestRoad(List<Road> roads, Godot.Vector2 point) =>
 	  roads.MinBy<Road, float>(road => (road.Curve.GetClosestPoint(point) - point).Length());
 
