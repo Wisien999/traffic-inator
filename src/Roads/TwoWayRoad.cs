@@ -154,13 +154,16 @@ public partial class TwoWayRoad : Road
 	{
 		if (source == lane1.Source)
 		{
+			GD.Print("Adding car to lane1");
 			return lane1.AddCar(source, car);
 		}
 		if (source == lane2.Source)
 		{
+			GD.Print("Adding car to lane2");
 			return lane2.AddCar(source, car);
 		}
 
+		GD.Print("Source is not in the road");
 		return false;
 	}
 

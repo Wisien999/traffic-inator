@@ -14,6 +14,7 @@ public abstract partial class Car : PathFollow2D
 	public Color Color = Colors.Blue;
 	public abstract Type CarType { get; }
 	public int Speed { get => 50; }
+	public int Length { get => 18; }
 
 	private Sprite2D _sprite = new Sprite2D() {
 		Texture = GD.Load<Texture2D>("res://assets/car/yellow.png"),

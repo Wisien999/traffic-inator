@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading;
 using Godot;
 using QuikGraph;
 using QuikGraph.Algorithms.ShortestPath;
@@ -15,6 +16,8 @@ public class CarManager
 	FloydWarshallAllShortestPathAlgorithm<RoadConnection, Lane> shortestPathAlgorithm;
 	private MemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
 	private Dictionary<Road, List<Building>> buildingsOnRoad = new Dictionary<Road, List<Building>>();
+	private int _carCount = 0;
+	public int CarCount { get => _carCount; }
 
 	public CarManager(AdjacencyGraph<RoadConnection, Lane> map, List<Building> allBuildings)
 	{
@@ -75,12 +78,23 @@ public class CarManager
 		{
 			NextEdgeIdx = 0
 		};
+		SetupCar(car);
 
 		return true;
 	}
 
 	public Car randomCar(RoadConnection start)
 	{
-		return new RandomCar();
+
+		var car = new RandomCar();
+		SetupCar(car);
+
+		return car;
+	}
+
+	private void SetupCar(Car car)
+	{
+		car.TreeEntered += () => Interlocked.Increment(ref _carCount);
+		car.TreeExited += () => Interlocked.Decrement(ref _carCount);
 	}
 }
