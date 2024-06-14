@@ -35,14 +35,12 @@ public partial class Lane : Path2D, IEdge<RoadConnection>
 
                 if (car.Progress >= designedProgress)
                 {
-                    // GD.Print("Car reached target");
                     carsToRemove.Add(car);
                 }
             }
         }
 
         carsToRemove.ForEach(car => {
-            // GD.Print("Removing car");
             _cars.Remove(car);
             RemoveChild(car);
         });
@@ -72,13 +70,8 @@ public partial class Lane : Path2D, IEdge<RoadConnection>
 
     public bool AddCar(RoadConnection source, Car car)
     {
-        // GD.Print("Adding car 1 " + source.Name + " " + Source.Name);
-        GD.Print("lol " + (source == Source));
         if (source != Source) return false;
-        // GD.Print("Adding car 2");
-        GD.Print("lol2 " + (_cars.Last?.Value.Progress >= 10));
         if (_cars.Last?.Value.Progress < 10) return false;
-        // GD.Print("Adding car 3");
         car.Progress = 0;
 
         _cars.AddLast(car);
@@ -90,7 +83,6 @@ public partial class Lane : Path2D, IEdge<RoadConnection>
     public bool AddCarAt(Building source, Car car)
     {
         var entryProgress = Curve.GetClosestOffset(source.Position);
-        // GD.Print("Entry progress ", entryProgress, " / ", Curve.GetBakedLength());
 
         var nextCar = findFirstCarAfter(entryProgress);
 

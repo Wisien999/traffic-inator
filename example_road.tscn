@@ -142,3 +142,8 @@ Target = NodePath("../roundabout1")
 position = Vector2(82, 55)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("7_tltl3")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Lollllllll"
