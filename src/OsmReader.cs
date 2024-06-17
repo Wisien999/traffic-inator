@@ -31,7 +31,7 @@ public class OsmReader
 	};
 	public static readonly HashSet<string> BuildingAllowedTypes = new()
 	{
-		"yes",
+		// "yes",
 		"university",
 		"school",
 		"residential",
@@ -54,7 +54,7 @@ public class OsmReader
 		// "terrace",
 		"hotel",
 		"garage",
-		"hut",
+		// "hut",
 		// "shed",
 		"office",
 		"government",
@@ -65,7 +65,7 @@ public class OsmReader
 		// "bridge",
 		// "guardhouse",
 		"police",
-		"kiosk",
+		// "kiosk",
 		"hospital",
 		"parking_entrance",
 		// "passage",

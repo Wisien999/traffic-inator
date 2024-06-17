@@ -8,7 +8,7 @@ public partial class CarCounter : Label
 	private GlobalMapData GlobalMapData => GetNode<GlobalMapData>("/root/GlobalMapData");
 
 	private Timer _redrawTimer;
-	private int Value { get => GlobalMapData.CarManager.CarCount; }
+	private int Value { get => GlobalMapData.CarManager?.CarCount ?? 0; }
 
 	public override void _Ready()
 	{
