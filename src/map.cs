@@ -19,12 +19,12 @@ public partial class map : Node2D
 			"*.pbf ; Osm Protobuf Map file"
 		  },
 		  Access = FileDialog.AccessEnum.Filesystem,
-		  UseNativeDialog = true
 		};
-		fileDialog.UseNativeDialog = fileDialog.CanDraw();
 		fileDialog.FileSelected += init;
+    fileDialog.CloseRequested += () => GetTree().Quit();
+    fileDialog.Canceled += () => GetTree().Quit();
 		AddChild(fileDialog);
-		fileDialog.Popup();
+		fileDialog.PopupCenteredRatio();
 	}
 
 	public void init(string path) {
