@@ -12,18 +12,19 @@ public partial class map : Node2D
 	public override void _Ready()
 	{
 		this.Name = "Map";
-    fileDialog = new FileDialog() {
-      FileMode = FileDialog.FileModeEnum.OpenFile,
-      Filters = new string[] {
-        "*.osm ; Osm XML Map file",
-        "*.pbf ; Osm Protobuf Map file"
-      },
-      Access = FileDialog.AccessEnum.Filesystem,
-      UseNativeDialog = true
-    };
-    fileDialog.FileSelected += init;
-    AddChild(fileDialog);
-    fileDialog.Popup();
+		fileDialog = new FileDialog() {
+		  FileMode = FileDialog.FileModeEnum.OpenFile,
+		  Filters = new string[] {
+			"*.osm ; Osm XML Map file",
+			"*.pbf ; Osm Protobuf Map file"
+		  },
+		  Access = FileDialog.AccessEnum.Filesystem,
+		  UseNativeDialog = true
+		};
+		fileDialog.UseNativeDialog = fileDialog.CanDraw();
+		fileDialog.FileSelected += init;
+		AddChild(fileDialog);
+		fileDialog.Popup();
 	}
 
 	public void init(string path) {
