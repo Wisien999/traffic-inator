@@ -8,115 +8,124 @@ namespace Trafficinator;
 public partial class Lane : Path2D, IEdge<RoadConnection>
 {
 
-    public RoadConnection Source { get; set; }
-    public RoadConnection Target { get; set; }
+	private RoadConnection _source;
+	public RoadConnection Source { 
+		get => _source;
+		set {
+			_source?.OutRoads?.Remove(Road);
+			_source = value;
+			_source?.OutRoads?.Add(Road);
+		}
+	}
 
-    private readonly LinkedList<Car> _cars = new();
+	public RoadConnection Target { get; set; }
 
-    public float Length => Curve.GetBakedLength();
-    public Road Road { get; set; }
+	private readonly LinkedList<Car> _cars = new();
 
-    public override void _Process(double delta)
-    {
-        var carsToRemove = new List<Car>();
-        var lastAvailablePos = Length;
-        foreach (var car in _cars)
-        {
-            var lastCarPos = car.Progress;
-            car.Progress = Math.Min(lastAvailablePos, lastCarPos + car.Speed * (float)delta);
-            // ReSharper disable once CompareOfFloatsByEqualityOperator
-            if (lastCarPos != car.Progress)
-                car.QueueRedraw();
-            lastAvailablePos = car.Progress - car.Length;
+	public float Length => Curve.GetBakedLength();
+	public Road Road { get; set; }
 
-            if (car is IdealTargetedCar targetCar && targetCar.NextEdgeIdx > targetCar.PlannedPath.Count)
-            {
-                var designedProgress = Curve.GetClosestOffset(targetCar.Target.Position);
+	public override void _Process(double delta)
+	{
+		var carsToRemove = new List<Car>();
+		var lastAvailablePos = Length;
+		foreach (var car in _cars)
+		{
+			var lastCarPos = car.Progress;
+			car.Progress = Math.Min(lastAvailablePos, lastCarPos + car.Speed * (float)delta);
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			if (lastCarPos != car.Progress)
+				car.QueueRedraw();
+			lastAvailablePos = car.Progress - car.Length;
 
-                if (car.Progress >= designedProgress)
-                {
-                    carsToRemove.Add(car);
-                }
-            }
-        }
+			if (car is IdealTargetedCar targetCar && targetCar.NextEdgeIdx > targetCar.PlannedPath.Count)
+			{
+				var designedProgress = Curve.GetClosestOffset(targetCar.Target.Position);
 
-        carsToRemove.ForEach(car => {
-            _cars.Remove(car);
-            RemoveChild(car);
-        });
+				if (car.Progress >= designedProgress)
+				{
+					carsToRemove.Add(car);
+				}
+			}
+		}
 
-        var firstCar = _cars.First;
-        // ReSharper disable once CompareOfFloatsByEqualityOperator
-        if (firstCar != null && firstCar.Value.Progress == Length)
-        {
-            if (Target != null)
-            {
-                var res = Target.CarEntered(Road, firstCar.Value);
-                if (res)
-                {
-                    _cars.RemoveFirst();
-                    RemoveChild(firstCar.Value);
-                }
+		carsToRemove.ForEach(car => {
+			_cars.Remove(car);
+			RemoveChild(car);
+		});
 
-            }
-        }
+		var firstCar = _cars.First;
+		// ReSharper disable once CompareOfFloatsByEqualityOperator
+		if (firstCar != null && firstCar.Value.Progress == Length)
+		{
+			if (Target != null)
+			{
+				var res = Target.CarEntered(Road, firstCar.Value);
+				if (res)
+				{
+					_cars.RemoveFirst();
+					RemoveChild(firstCar.Value);
+				}
 
-    }
+			}
+		}
 
-    public override void _Draw()
-    {
-        DrawPolyline(Curve.GetBakedPoints(), Colors.Black, 7);
-    }
+	}
 
-    public bool AddCar(RoadConnection source, Car car)
-    {
-        if (source != Source) return false;
-        if (_cars.Last?.Value.Progress < 10) return false;
-        car.Progress = 0;
+	public override void _Draw()
+	{
+		DrawPolyline(Curve.GetBakedPoints(), Colors.Black, 7);
+	}
 
-        _cars.AddLast(car);
-        AddChild(car);
+	public bool AddCar(RoadConnection source, Car car)
+	{
+		if (source != Source) return false;
+		if (_cars.Last?.Value.Progress < 10) return false;
+		car.Progress = 0;
 
-        return true;
-    }
+		_cars.AddLast(car);
+		AddChild(car);
 
-    public bool AddCarAt(Building source, Car car)
-    {
-        var entryProgress = Curve.GetClosestOffset(source.Position);
+		return true;
+	}
 
-        var nextCar = findFirstCarAfter(entryProgress);
+	public bool AddCarAt(Building source, Car car)
+	{
+		var entryProgress = Curve.GetClosestOffset(source.Position);
 
-        // no space
-        if (nextCar?.Progress - entryProgress < 30) return false;
+		var nextCar = findFirstCarAfter(entryProgress);
 
-        if (_cars.Count == 0 || nextCar == null)
-        {
-            // GD.Print("Adding car at the end");
-            car.Progress = entryProgress;
-            _cars.AddFirst(car);
-            AddChild(car);
+		// no space
+		if (nextCar?.Progress - entryProgress < 30) return false;
 
-            return true;
-        }
+		if (_cars.Count == 0 || nextCar == null)
+		{
+			// GD.Print("Adding car at the end");
+			car.Progress = entryProgress;
+			_cars.AddFirst(car);
+			AddChild(car);
 
-        // GD.Print("Adding car before ", nextCar.Progress);
-        car.Progress = entryProgress;
-        _cars.AddAfter(_cars.Find(nextCar), car);
-        AddChild(car);
+			return true;
+		}
 
-        return true;
-    }
+		// GD.Print("Adding car before ", nextCar.Progress);
+		car.Progress = entryProgress;
+		_cars.AddAfter(_cars.Find(nextCar), car);
+		AddChild(car);
 
-    private Car findFirstCarAfter(float progress)
-    {
-        Car lastCar = null;
-        foreach (var car in _cars)
-        {
-            if (car.Progress > progress)
-            {
-                lastCar = car;
-            }
-        }
-        return lastCar;
-    }
+		return true;
+	}
+
+	private Car findFirstCarAfter(float progress)
+	{
+		Car lastCar = null;
+		foreach (var car in _cars)
+		{
+			if (car.Progress > progress)
+			{
+				lastCar = car;
+			}
+		}
+		return lastCar;
+	}
 }

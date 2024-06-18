@@ -21,8 +21,8 @@ public partial class map : Node2D
 		  Access = FileDialog.AccessEnum.Filesystem,
 		};
 		fileDialog.FileSelected += init;
-    fileDialog.CloseRequested += () => GetTree().Quit();
-    fileDialog.Canceled += () => GetTree().Quit();
+	fileDialog.CloseRequested += () => GetTree().Quit();
+	fileDialog.Canceled += () => GetTree().Quit();
 		AddChild(fileDialog);
 		fileDialog.PopupCenteredRatio();
 	}

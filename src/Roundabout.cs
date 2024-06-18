@@ -36,8 +36,8 @@ public partial class Roundabout : RoadConnection
 
 	public override void _Process(double delta)
 	{
-		if (OutRoads.Count == 0) return;
 		if (cars.Count == 0) return;
+		if (OutRoads.Count == 0) return;
 
 
 		var (car, entranceTime, source) = cars.Peek();
@@ -48,7 +48,7 @@ public partial class Roundabout : RoadConnection
 		}
 
 
-		var dispatched = DispatchCar(car);
+		var dispatched = DispatchCar(car, source);
 
 
 		if (dispatched)
@@ -59,13 +59,13 @@ public partial class Roundabout : RoadConnection
 
 	}
 
-	private bool DispatchCar(Car car)
+	private bool DispatchCar(Car car, Road source)
 	{
 		return car switch
 		{
 			null => throw new ArgumentNullException(),
 			IdealTargetedCar targetedCar =>
-				DispatchTargetedCar(targetedCar),
+				DispatchTargetedCar(targetedCar, source),
 			RandomCar randomCar =>
 				DispatchRandomCar(randomCar),
 			_ => throw new ArgumentException("Invalid car type")
@@ -80,7 +80,7 @@ public partial class Roundabout : RoadConnection
 	}
 
 
-	private bool DispatchTargetedCar(IdealTargetedCar car)
+	private bool DispatchTargetedCar(IdealTargetedCar car, Road source)
 	{
 		if (car.NextEdgeIdx < car.PlannedPath.Count)
 		{
