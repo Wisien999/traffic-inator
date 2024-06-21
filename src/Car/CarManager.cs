@@ -96,5 +96,6 @@ public class CarManager
 	{
 		car.TreeEntered += () => Interlocked.Increment(ref _carCount);
 		car.TreeExited += () => Interlocked.Decrement(ref _carCount);
+		car.Speed += (new Random().Next() % 30) - 15;
 	}
 }
